@@ -1,0 +1,344 @@
+{% extends "AdminBundle::admin_layout.html.twig" %}
+
+{% block menu %}
+	{{ knp_menu_render('AdminBundle:Builder:adminMenu') }}
+{% endblock %}
+
+{% block rastro %}{{ wo_render_breadcrumbs() }}{% endblock %}
+
+{% block titulo %}Listado de reservas{% endblock %}
+
+
+{% block cuerpo %}
+    <div id="ajaxMsg"></div>
+    
+    <div class="form-inline">
+        <label for="sede">Sede:</label>
+        <select name="sede" id="sede">
+            <option value="">Seleccione una sede</option>
+        </select>
+    </div><br/>
+    
+    <div id="agendas" >
+        <table id="agenda_reservas">
+            <thead>
+                <tr>                    
+                    <th>Inicia</th>
+                    <th>Termina</th>
+                    <th>Tiempo</th>
+                    <th>Estado</th>
+                    <th>Nota</th>
+                    <th>Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            
+            </tbody>
+        </table>
+    </div>
+    
+    <div id="cupos">
+        <table id="reservas">
+            <thead>
+                <tr>
+                    <th>Hora</th>
+                    <th>Estado</th>
+                    <th>Nota</th>                    
+                    <th>Paciente</th>
+                    <th>Movil</th>
+                    <th>Actividad</th>
+                    <th>Opciones</th>
+                    <th>Accion</th>
+                </tr>
+            </thead>
+            <tbody>
+            
+            </tbody>
+        </table>
+        
+        <a href="{{ path('cupo_new') }}" class="btn"><span class="label">Nueva reserva</span></a>   
+        
+        <div id="boxModal"></div>     
+        
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    
+    <script type="text/javascript" src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script type="text/javascript" src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+
+    <script type="text/javascript">
+
+	    function buscarSedeUsuario(){
+	        
+	    	var url="{{ path('sede_buscar') }}";
+	        
+	        $.post(url,{
+	               
+	        },function(data){
+	            if(data.responseCode==200 ){
+	
+	                $("#ajaxMsg").empty();
+	
+	        		var select = $('#sede');
+	        		if(select.prop) {
+	        		  var options = select.prop('options');
+	        		}
+	        		else {
+	        		  var options = select.attr('options');
+	        		}
+	        		$('option', select).remove();
+	
+	        		options[options.length] = new Option('Seleccione una sede', '');
+	
+	        		$.each(data.sedes, function(val, text) {
+	        		    options[options.length] = new Option(text, val);
+	        		});
+	        		
+	        		select.val('');                    
+	            }
+	            else if(data.responseCode==400){
+	            	$('#ajaxMsg').html(data.msg);
+	                $('#ajaxMsg').css("color","red");
+	            }
+	            else{
+	        	    alert("Ha ocurrido un error en el sistema.");
+	            }
+	        });    	
+	    } // buscarSedeUsuario
+
+    	$(document).ready(function() {
+            buscarSedeUsuario();
+
+            $("#sede").change(function(){
+                
+                var sede = $("#sede").val();
+
+                $('#agendas tbody').empty();
+                $('#cupos tbody').empty();
+                                
+            	if($.isNumeric(sede)){
+            		var url="{{ path('ajx_agenda_lista') }}";
+                    
+                    $.post(url,{
+                        sede: sede       
+                    },function(data){
+                        if(data.responseCode==200 ){            
+                            $("#ajaxMsg").empty();
+                            
+                            var href = '';
+
+                            $.each(data.agenda, function(i, val) {
+
+                            	href='<a class="btn"" href="#" onClick="listarCupos('+val.id+');">Ver cupos</a>';
+                                
+                                $("#agenda_reservas tbody").append("<tr>");                                  
+                                  $("#agenda_reservas tbody").append("<td>"+val.fechaInicio.date+"</td>");
+                                  $("#agenda_reservas tbody").append("<td>"+val.fechaFin.date+"</td>");
+                                  $("#agenda_reservas tbody").append("<td>"+val.intervalo+"</td>");
+                                  $("#agenda_reservas tbody").append("<td>"+val.estado+"</td>");
+                                  $("#agenda_reservas tbody").append("<td>"+val.nota+"</td>");
+                                  $("#agenda_reservas tbody").append("<td>"+href+"</td>");                               
+                                $("#agenda_reservas tbody").append("</tr>");
+                    		});         
+                    		                    
+                        }
+                        else if(data.responseCode==400){
+                        	$('#ajaxMsg').html(data.msg);
+                            $('#ajaxMsg').css("color","red");
+                        }
+                        else{
+                    	    alert("Ha ocurrido un error en el sistema.");
+                        }
+                    });
+            	}else{
+                	alert("Seleccione una sede correcta.");
+                }
+            });
+        });
+
+    	function popup(url,ancho,alto) {
+			var posicion_x; 
+			var posicion_y; 
+	
+			posicion_x=(screen.width/2)-(ancho/2); 
+			posicion_y=(screen.height/2)-(alto/2); 
+	
+			window.open(url, "", "width="+ancho+",height="+alto+",menubar=0,toolbar=0,directories=0,scrollbars=yes,resizable=no,left="+posicion_x+",top="+posicion_y+"");
+		}
+
+        function listarCupos(agenda){
+            
+        	var url="{{ path('ajx_cupo_lista') }}";
+        	        	
+
+        	$('#cupos tbody').empty();
+            
+            $.post(url,{
+                agenda: agenda
+            },function(data){
+                if(data.responseCode==200 ){
+
+                	$.each(data.cupo, function(i, val) 
+                    {
+
+                        	var id = parseInt(val.id);
+
+                    		var ruta = Routing.generate('cupo_edit', { 'id': id });                    		
+                    		var editar_pac = Routing.generate('paciente_edit', { 'id': parseInt(val.paciente) });
+
+                    		var a = '';
+                    		var b = '';
+                    		var c = '';
+                    		var d = '';
+
+                    		if(val.priNombre) a = val.priNombre + " ";
+                    		if(val.segNombre) b = val.segNombre + " ";
+                    		if(val.priApellido) c = val.priApellido + " ";
+                    		if(val.segApellido) d = val.segApellido + " ";
+
+                    		var nombre = a.concat(b, c, d);
+                    		                        
+                            $("#reservas tbody").append("<tr>");
+                              $("#reservas tbody").append("<td>"+val.hora +"</td>");
+                              $("#reservas tbody").append("<td>"+val.estado+"</td>");
+                              $("#reservas tbody").append("<td>"+val.nota+"</td>");                              
+                              $("#reservas tbody").append("<td><a href='"+ editar_pac +"' target='popup' title='Ver información del paciente' onClick='popup(this.href,750,600); return false;'>"+nombre.toUpperCase()+"</a></td>");
+                              $("#reservas tbody").append("<td>"+val.movil+"</td>");
+                              $("#reservas tbody").append("<td>"+val.nombre+"</td>");
+                              if(val.estado == 'Asignado' || val.estado == "Confirmado" )
+                                  {
+	                            	  $("#reservas tbody").append("<td>"+
+	                                  		"<select class='span2' id='select"+id+"'>"+
+	                                  		  "<option value='' selected>Opciones</option>"+
+	                                            "<option value='CO'>Confirmado</option>"+
+	                                            "<option value='CU'>Cumplida</option>"+
+	                                            "<option value='CA'>Cancelado</option>"+
+	                                            "<option value='IN'>Incumplida</option>"+
+	                                            "<option value='RE'>Reprogramar</option>"+
+	                                          "</select>"+
+	                                          "</td>");
+	                                    $("#reservas tbody").append("<td><a class='btn' href='#' onClick='showDialog("+id+", "+agenda+"); return false;'>Aceptar</a></td>");
+                                  }else{
+	                                	  $("#reservas tbody").append("<td></td>");
+	                                      $("#reservas tbody").append("<td></td>"); 
+                                      
+                                     }                                                             
+                           $("#reservas tbody").append("</tr>");
+
+
+                 $("#boxModal").append(""+
+                    "<div id='myModal"+id+"' class='modal hide fade' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>"
+               			+"<div class='modal-header'>"
+               			+	 "<button type='button' class='close' data-dismiss='modal' aria-hidden='true'>×</button>"
+               			+	 "<h3 id='myModalLabel'>Motivo cancelacion de la cita</h3>"
+               			+"</div>"
+               			+"<div class='modal-body'>"
+               			+	"<textarea class='span6' placeholder='Ingrese el motivo' id='CA_motivo"+id+"'></textarea>"
+               			+	"<p>"
+                   		+		"<strong>longitud de <em id='count"+id+"'></em> caracteres.</strong>"
+               			+	"</p>"
+               			+"</div>"
+               			+"<div class='modal-footer'>"				
+               			+	"<button class='btn btn-primary' onClick='selectAction("+id+", "+agenda+"); return false;'>Save</button>"
+               			+	"<button class='btn btn-danger' data-dismiss='modal' aria-hidden='true'>Close</button>"
+               			+"</div>"
+               		+"</div>");
+            		});
+                }
+                else if(data.responseCode==400){
+                	$('#ajaxMsg').html(data.msg);
+                    $('#ajaxMsg').css("color","red");
+                }
+                else{
+            	    alert("Ha ocurrido un error en el sistema.");
+                }
+            });    	
+        } // buscarSedeUsuario
+
+
+	function showDialog(cupo, agenda)
+        {
+			var estado = $("#select"+cupo).val();
+			
+			if(estado != '')
+			{
+				if(estado == 'RE')
+			     {
+						var url= Routing.generate('cupo_edit', { 'id': cupo });				
+						$(location).attr('href',url);	   		 		 
+			     }else if(estado == 'CA')
+			     {
+				     $('#myModal'+cupo).modal('toggle');
+				     maxlengthTextarea(cupo);	     
+			    	
+			     }else{
+			    	 	selectAction(cupo, agenda);
+			    	 	$("#CA_motivo"+cupo).val('');
+				     }
+			}else{
+					$('#ajaxMsg').html("Seleccione una opcion valida");
+	                $('#ajaxMsg').css("color","red");
+	                alert("Seleccione una opcion valida.");
+				}	        
+        }
+
+        
+     function selectAction(cupo, agenda)
+     {
+    	 var url="{{ path('ajx_cupo_estado') }}";
+    	 var estado = $("#select"+cupo).val();
+    	 var textarea = $("#CA_motivo"+cupo).val();  
+    	 $('#myModal'+cupo).modal('hide');
+         
+         $.post(url,{
+             estado: estado,
+             textarea: textarea,
+             cupo: cupo
+         },function(data){
+             if(data.responseCode==200 ){
+             	$('#ajaxMsg').html(data.msg);
+                 $('#ajaxMsg').css("color","green");
+
+                 listarCupos(agenda);
+             }
+             else if(data.responseCode==400){
+             	$('#ajaxMsg').html(data.msg);
+                 $('#ajaxMsg').css("color","red");
+             }else if(data.responseCode==210)
+             {
+            	 var url= Routing.generate('factura_save', { 'cupo': cupo });				
+				 $(location).attr('href',url);
+             }
+             else{
+         	    alert("Ha ocurrido un error en el sistema.");
+             }
+         }); 
+         }
+
+     
+         
+     function maxlengthTextarea(cupo)
+     {
+    	 maxCharacters = 100;
+
+    	 $('#count'+cupo).text(maxCharacters);
+
+    	 $('CA_motivo'+cupo).bind('keyup keydown', function() {
+    	     var count = $('#count'+cupo);
+    	     var characters = $(this).val().length;
+    	     
+    	     if (characters > maxCharacters) {
+    	         count.addClass('over');
+    	     } else {
+    	         count.removeClass('over');
+    	     }
+    	     
+    	     count.text(maxCharacters - characters);
+    	 });    	
+     }
+        
+    </script>
+{% endblock %}

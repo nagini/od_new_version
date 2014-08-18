@@ -1,0 +1,197 @@
+{% extends "AdminBundle::admin_layout.html.twig" %}
+
+{% block menu %}
+	{{ knp_menu_render('AdminBundle:Builder:adminMenu') }}
+{% endblock %}
+
+{% block rastro %}{{ wo_render_breadcrumbs() }}{% endblock %}
+
+{% block titulo %}Agenda medica{% endblock %}
+
+
+{% block cuerpo %}
+
+    <div>
+        {{ form_label(form.sede) }}
+        {{ form_errors(form.sede) }}
+        {{ form_widget(form.sede) }}
+    </div>
+    
+    <div id="ajaxMsg"></div>
+    <div id="programacion"></div>
+{% endblock %}
+
+{% block javascripts %}
+
+<script type="text/javascript" src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+<script type="text/javascript" src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+
+<script type="text/javascript">
+
+    $("#AgendaMedica_sede").change(function(){
+        
+        var sede = $("#AgendaMedica_sede").val();
+                
+    	if($.isNumeric(sede)){
+
+    	    var url = "{{ path('agenda_medica_buscar') }}";
+    	    $("#programacion").html("<img src='{{ asset('bundles/dlaser/images/ajax-loader.gif') }}' />");
+        	
+    		$.post(url,{
+                sede: sede
+            },function(data){
+                if(data.responseCode==200 ){
+
+                	$("#programacion").empty();
+                	$("#ajaxMsg").empty();
+                    
+                    var tabla = '<table>';
+                    tabla += '<caption>Agenda medica</caption>';
+                    tabla += '<thead>';
+                    tabla += '<tr>';
+                    tabla += '<th>Hora</th><th>Facturado</th><th>Identificación</th><th>Paciente</th><th>Actividad</th><th>Observación</th><th>Estado</th><th>Opcion</th><th>Acción</th>';
+                    tabla += '</tr>';
+                    tabla += '</thead>';
+                    tabla += '<tbody>';
+                    tr = '';
+                    dialog = '';               	             
+                
+                	$.each(data.agenda, function(i, val) {        	
+                        	
+                		var ruta = Routing.generate('realizar_actividad', { 'factura': val.id });               		
+                		                        
+                        tr += '<tr class="'+ val.estado +'">';
+                        tr += '<td>'+val.hora+'</td>';
+                        tr += '<td>'+val.fecha+'</td>';
+                        tr += '<td>'+val.identificacion+'</td>';
+                        tr += '<td>'+val.priNombre+" "+val.segNombre+" "+val.priApellido+" "+val.segApellido+'</td>';                        
+                        tr += '<td>'+val.cargo+'</td>';                        
+                        tr += '<td>'+val.observacion+'</td>';
+                        tr += '<td>'+val.estado+'</td>';
+                        
+                        tr += "<td>"+
+                  				"<select class='span2' id='select"+val.id+"'>"+
+                		  			  "<option value='' selected>Opciones</option>"+
+			                          "<option value='PN'>Programar Nueva</option>"+
+			                          "<option value='DE'>Desertor</option>"+
+			                          "<option value='NO'>No Inicia</option>"+
+                        		"</select>"+
+                        	  "</td>";
+
+						tr += "<td><a class='btn' href='#' onClick='showDialog("+val.id+"); return false;'>Aceptar</a></td>";                        
+                        tr += '</tr>';                               
+
+                        dialog += "<div id='myModal"+val.id+"' class='modal hide fade' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>"
+               						+"<div class='modal-header'>"
+               						+	 "<button type='button' class='close' data-dismiss='modal' aria-hidden='true'>×</button>"
+               						+	 "<h3 id='myModalLabel'>Motivo cancelacion de la cita</h3>"
+               						+"</div>"
+               						+"<div class='modal-body'>"
+               						+	"<textarea class='span6' placeholder='Ingrese el motivo'  id='CA_motivo"+val.id+"'></textarea>"
+               						+	"<p>"
+                   					+		"<strong>longitud de <em id='count"+val.id+"' ></em> caracteres.</strong>"
+               						+	"</p>"
+               						+"</div>"
+               						+"<div class='modal-footer'>"				
+               						+	"<button class='btn btn-primary' onClick='selectAction("+val.id+"); return false;'>Save</button>"
+               						+	"<button class='btn btn-danger' data-dismiss='modal' aria-hidden='true'>Close</button>"
+               						+"</div>"
+               					+"</div>";
+                        
+            		});
+
+                	tabla += tr;
+                    tabla += '</tbody></table>';
+                    tabla += "<div id='boxModal'>"+dialog+"</div>";
+
+                	$("#programacion").html(tabla);
+                 }
+                 else if(data.responseCode==400){
+                	 $("#programacion").empty();
+                  	$('#ajaxMsg').html(data.msg);
+                    $('#ajaxMsg').css("color","red");
+                 }
+                 else{
+             	    alert("Ha ocurrido un error en el sistema.");
+                 }
+          });
+        }else{
+            alert("Selecciona una opción valida");
+        }
+    });
+
+
+    function showDialog(factura)
+    {
+		var estado = $("#select"+factura).val();
+		
+		if(estado != '')
+		{
+			if(estado == 'PN')
+		     {
+			     $('#myModal'+factura).modal('toggle');	
+			     maxlengthTextarea(factura);		     
+			     		    	
+		     }else{
+		    	 	selectAction(factura);
+		    	 	$("#CA_motivo"+factura).val('');
+			     }
+		}else{
+				$('#ajaxMsg').html("Seleccione una opcion valida");
+                $('#ajaxMsg').css("color","red");
+                alert("Seleccione una opcion valida.");
+			}	        
+    }
+
+    
+ function selectAction(factura)
+ {	 
+	 var url = Routing.generate('realizar_actividad', { 'factura': factura });
+	 var estado = $("#select"+factura).val();
+	 var textarea = $("#CA_motivo"+factura).val();  
+	 $('#myModal'+factura).modal('hide');
+     
+     $.post(url,{
+         estado: estado,
+         textarea: textarea         
+     },function(data){
+         if(data.responseCode==200 ){
+         	$('#ajaxMsg').html(data.msg);
+             $('#ajaxMsg').css("color","green");
+
+             var ruta = "{{ path('agenda_medica_list') }}";				
+			 $(location).attr('href',ruta);             
+         }
+         else if(data.responseCode==400){
+         	$('#ajaxMsg').html(data.msg);
+             $('#ajaxMsg').css("color","red");            
+         }
+         else{
+     	    alert("Ha ocurrido un error en el sistema.");
+         }
+     }); 
+     }
+
+
+ function maxlengthTextarea(cupo)
+ {
+	 maxCharacters = 200;
+
+	 $('#count'+cupo).text(maxCharacters);
+
+	 $('CA_motivo'+cupo).bind('keyup keydown', function() {
+	     var count = $('#count'+cupo);
+	     var characters = $(this).val().length;
+	     
+	     if (characters > maxCharacters) {
+	         count.addClass('over');
+	     } else {
+	         count.removeClass('over');
+	     }
+	     
+	     count.text(maxCharacters - characters);
+	 });    	
+ }
+	  
+</script>
+{% endblock %}

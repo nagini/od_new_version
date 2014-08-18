@@ -1,0 +1,62 @@
+{% extends "AdminBundle::admin_layout.html.twig" %}
+
+{% block menu %}
+	{{ knp_menu_render('AdminBundle:Builder:adminMenu') }}
+{% endblock %}
+
+{% block rastro %}{{ wo_render_breadcrumbs() }}{% endblock %}
+
+{% block titulo %}Listado de usuarios{% endblock %}
+
+
+{% block cuerpo %}
+    <table class="records_list">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Cedula</th>
+                <th>Perfil</th>
+                <th>Telefono</th>
+                <th>Direccion</th>
+                <th>TProfecional</th>
+                <th>Especialidad</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td><a href="{{ path('usuario_show', {'id':entity.id}) }}">{{ entity.nombre }}</a></td>
+                <td>{{ entity.apellido }}</td>
+                <td>{{ entity.cc }}</td>
+                <td>
+                	{% if entity.perfil == 'ROLE_ADMIN'  %}
+                		<b>Administrador</b>
+                	{% elseif entity.perfil == 'ROLE_MEDICO' %}
+                		Médico
+                	{% elseif entity.perfil == 'ROLE_AUX' %}
+                		Auxiliar
+                	{% endif %}
+                </td>
+                <td>{{ entity.telefono }}</td>
+                <td>{{ entity.direccion }}</td>
+                <td>{{ entity.tp }}</td>
+                <td>{{ entity.especialidad }}</td>
+            </tr>
+         {% else %}
+         	<tr>
+         		<td colspan="9">No tenemos usuario creados.</td>
+         	</tr>
+        {% endfor %}
+        </tbody>
+    </table>    
+        
+		{% if entities %}
+			{{ knp_pagination_render(entities) }}
+    	{% endif %}
+    
+    <a href="{{ path('usuario_new') }}" class="btn"><span class="label">Nuevo usuario</span></a>
+    
+{% endblock %}

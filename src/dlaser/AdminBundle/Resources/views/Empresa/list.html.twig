@@ -1,0 +1,37 @@
+{% extends "AdminBundle::admin_layout.html.twig" %}
+
+{% block menu %}
+	{{ knp_menu_render('AdminBundle:Builder:adminMenu') }}
+{% endblock %}
+
+{% block rastro %}{{ wo_render_breadcrumbs() }}{% endblock %}
+
+{% block titulo %}Listado de empresas{% endblock %}
+
+
+{% block cuerpo %}
+    <table>
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>Nit</th>
+                <th>Nombre</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td><a href="{{ path('empresa_show', {'id':entity.id}) }}">{{ entity.nit }}</a></td>
+                <td>{{ entity.nombre }}</td>
+            </tr>
+         {% else %}
+         	<tr>
+         		<td colspan="4">No tenemos empresas creadas.</td>
+         	</tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    
+    <a href="{{ path('empresa_new') }}" class="btn"><span class="label">Nueva empresa</span></a>
+{% endblock %}

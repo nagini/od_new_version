@@ -1,0 +1,39 @@
+{% extends "AdminBundle::admin_layout.html.twig" %}
+
+{% block menu %}
+	{{ knp_menu_render('AdminBundle:Builder:adminMenu') }}
+{% endblock %}
+
+{% block rastro %}{{ wo_render_breadcrumbs() }}{% endblock %}
+
+{% block titulo %}Detalles del cargo{% endblock %}
+
+
+{% block cuerpo %}
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Código</th>
+                <td>{{ entity.cups }}</td>
+            </tr>
+            <tr>
+                <th>Nombre</th>
+                <td>{{ entity.nombre }}</td>
+            </tr>
+            <tr>
+                <th>Indicaciones</th>
+                <td>{{ entity.indicacion }}</td>
+            </tr>
+            <tr>
+                <th>Valor</th>
+                <td>$ {{ entity.valor | number_format(0, ',', '.') }}</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    
+    <a href="{{ path('cargo_edit', { 'id': entity.id }) }}" class="btn"><span class="label">Modificar cargo</span></a>
+    <a href="{{ path('cargo_list') }}" class="button middle"><span class="label">Regresar al listado</span></a>
+
+{% endblock %}

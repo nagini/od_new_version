@@ -1,0 +1,219 @@
+{% extends "AdminBundle::admin_layout.html.twig" %}
+
+{% block menu %}
+	{{ knp_menu_render('AdminBundle:Builder:adminMenu') }}
+{% endblock %}
+
+{% block rastro %}{{ wo_render_breadcrumbs() }}{% endblock %}
+
+{% block titulo %}Buscar la reserva{% endblock %}
+
+
+{% block cuerpo %}
+    	
+    	<div id="ajaxMsg"></div>
+    	
+    	<div class="form-search">
+    		<div class="input-append">
+    			<input type="text" name="valor" id="valor" autofocus="autofocus" class="span3 search-query" placeholder="Ingrese identificación" />
+    			<button class="btn btn-success" type="submit" id="buscar">Buscar </button>
+    		</div>    
+    	</div>	
+    	<br/>
+    	
+    	
+    	<div id="cupos">
+        <table id="reservas">
+            <thead>
+                <tr>
+                    <th>Hora</th>
+                    <th>Estado</th>
+                    <th>Nota</th>
+                    <th>Paciente</th>
+                    <th>Movil</th>
+                    <th>Actividad</th>
+                    <th>Sede</th>
+                    <th>Opciones</th>
+                    <th>Accion</th>
+                </tr>
+            </thead>
+            <tbody>
+            
+            </tbody>
+        </table>
+    </div>
+    
+    <div id="boxModal"></div>
+    
+</form>
+{% endblock %}
+
+{% block javascripts %}
+
+<script type="text/javascript" src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+<script type="text/javascript" src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+<script src="{{ asset('bundles/dlaser/js/jquery.loadmask.min.js') }}"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+
+    	$("#buscar").click(function(){
+
+    		$("#reservas tbody").empty();
+        
+            var url="{{ path('ajx_cupo_search') }}";
+    
+            var valor = $("#valor").val();
+            var parametro = 'identificacion';
+
+            if(valor){
+
+            	$("#mascara").mask("Waiting...");
+            
+                $.post(url,{
+                       valor: valor                       
+                },function(data){
+                    if(data.responseCode==200 ){
+
+                    	$("#mascara").unmask();
+                    	
+                    	$.each(data.cupo, function(i, val) {
+
+                    			var segNombre = "";
+                    			var segApellido = "";                    			
+                        	                            	    
+                            	var id = parseInt(val.id);        
+                        		var edit = Routing.generate('cupo_edit', { 'id': id });
+
+                        		if(val.segNombre) segNombre = " " + val.segNombre;
+                        		if(val.segApellido) segApellido = " " + val.segApellido;
+                        		                   		
+                        		                        		                        
+                                $("#reservas tbody").append("<tr>");
+                                  $("#reservas tbody").append("<td>"+val.hora+"</td>");
+                                  $("#reservas tbody").append("<td>"+val.estado+"</td>");
+                                  $("#reservas tbody").append("<td>"+val.nota+"</td>");
+                                  $("#reservas tbody").append("<td>"+val.priNombre + segNombre + " " + val.priApellido + segApellido + "</td>");
+                                  $("#reservas tbody").append("<td>"+val.movil+"</td>");
+                                  $("#reservas tbody").append("<td>"+val.cargo+"</td>");
+                                  $("#reservas tbody").append("<td>"+val.sede+"</td>");
+                                  if(val.estado == 'Asignado' || val.estado == "Confirmado" )
+                                  {
+	                            	  $("#reservas tbody").append("<td>"+
+	                                  		"<select class='span2' id='select"+id+"'>"+
+	                                  		  "<option value='' selected>Opciones</option>"+
+	                                            "<option value='CO'>Confirmado</option>"+
+	                                            "<option value='CU'>Cumplida</option>"+
+	                                            "<option value='CA'>Cancelado</option>"+
+	                                            "<option value='IN'>Incumplida</option>"+
+	                                            "<option value='RE'>Reprogramar</option>"+
+	                                          "</select>"+
+	                                          "</td>");
+	                                    $("#reservas tbody").append("<td><a class='btn' href='#' onClick='showDialog("+id+"); return false;'>Aceptar</a></td>");
+                                  }else{
+	                                	  $("#reservas tbody").append("<td></td>");
+	                                      $("#reservas tbody").append("<td></td>"); 
+                                      
+                                     }                                                             
+                           $("#reservas tbody").append("</tr>");
+
+
+			                 $("#boxModal").append(""+
+			                    "<div id='myModal"+id+"' class='modal hide fade' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>"
+			               			+"<div class='modal-header'>"
+			               			+	 "<button type='button' class='close' data-dismiss='modal' aria-hidden='true'>×</button>"
+			               			+	 "<h3 id='myModalLabel'>Motivo cancelacion de la cita</h3>"
+			               			+"</div>"
+			               			+"<div class='modal-body'>"
+			               			+	"<textarea class='span6' placeholder='Ingrese el motivo' id='CA_motivo"+id+"'></textarea>"
+			               			+	"<p>"
+			                   		+		"<strong>longitud de <em id='count"+id+"'></em> caracteres.</strong>"
+			               			+	"</p>"
+			               			+"</div>"
+			               			+"<div class='modal-footer'>"				
+			               			+	"<button class='btn btn-primary' onClick='selectAction("+id+"); return false;'>Save</button>"
+			               			+	"<button class='btn btn-danger' data-dismiss='modal' aria-hidden='true'>Close</button>"
+			               			+"</div>"
+			               		+"</div>");
+                                		               	
+                		});
+                    }
+                    else if(data.responseCode==400){
+                            	           	            	
+                    	$("#mascara").unmask();
+                    	$('#ajaxMsg').html(data.msg);
+                        $('#ajaxMsg').css("color","red");
+                    }
+                    else{
+                	    alert("Ha ocurrido un error en el sistema.");
+                    }
+                });
+            }else{
+                alert("ingrese un parametro de consulta");
+            }
+    	});
+    });
+
+   
+    function showDialog(cupo)
+    {
+		var estado = $("#select"+cupo).val();
+		
+		if(estado != '')
+		{
+			if(estado == 'RE')
+		     {
+					var url= Routing.generate('cupo_edit', { 'id': cupo });				
+					$(location).attr('href',url);	   		 		 
+		     }else if(estado == 'CA')
+		     {
+			     $('#myModal'+cupo).modal('toggle');			          
+		    	
+		     }else{
+		    	 	selectAction(cupo);
+		    	 	$("#CA_motivo"+cupo).val('');
+			     }
+		}else{
+				$('#ajaxMsg').html("Seleccione una opcion valida");
+                $('#ajaxMsg').css("color","red");
+                alert("Seleccione una opcion valida.");
+			}	        
+    }
+
+    
+ function selectAction(cupo)
+ {
+	 var url="{{ path('ajx_cupo_estado') }}";
+	 var estado = $("#select"+cupo).val();
+	 var textarea = $("#CA_motivo"+cupo).val(); 
+	 $('#myModal'+cupo).modal('hide'); 
+	 
+     
+     $.post(url,{
+         estado: estado,
+         textarea: textarea,
+         cupo: cupo
+     },function(data){
+         if(data.responseCode==200 ){
+         	$('#ajaxMsg').html(data.msg);
+             $('#ajaxMsg').css("color","green");
+             location.reload();
+             
+         }
+         else if(data.responseCode==400){
+         	$('#ajaxMsg').html(data.msg);
+             $('#ajaxMsg').css("color","red");
+         }else if(data.responseCode==210)
+         {
+        	 var url= Routing.generate('factura_save', { 'cupo': cupo });				
+			 $(location).attr('href',url);
+         }
+         else{
+     	    alert("Ha ocurrido un error en el sistema.");
+         }
+     }); 
+     }
+</script>
+
+{% endblock %}

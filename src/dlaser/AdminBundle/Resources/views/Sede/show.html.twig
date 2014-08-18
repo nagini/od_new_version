@@ -1,0 +1,46 @@
+{% extends "AdminBundle::admin_layout.html.twig" %}
+
+{% block menu %}
+	{{ knp_menu_render('AdminBundle:Builder:adminMenu') }}
+{% endblock %}
+
+{% block rastro %}{{ wo_render_breadcrumbs() }}{% endblock %}
+
+{% block titulo %}Detalles de la sede{% endblock %}
+
+{% block cuerpo %}
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Nombre</th>
+                <td>{{ entity.nombre }}</td>
+            </tr>
+            <tr>
+                <th>Ciudad</th>
+                <td>{{ entity.ciudad }}</td>
+            </tr>
+            <tr>
+                <th>Telefono</th>
+                <td>{{ entity.telefono }}</td>
+            </tr>
+            <tr>
+                <th>Movil</th>
+                <td>{{ entity.movil }}</td>
+            </tr>
+            <tr>
+                <th>Dirección</th>
+                <td>{{ entity.direccion }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ entity.email }}</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    
+    <a href="{{ path('sede_edit', { 'id': entity.id }) }}" class="btn"><span class="label">Modificar sede</span></a>
+    <a href="{{ path('empresa_show', {'id':empresa.id}) }}" class="button middle"><span class="label">Regresar al listado</span></a>
+
+{% endblock %}

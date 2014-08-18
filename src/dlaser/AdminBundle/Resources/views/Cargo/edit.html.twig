@@ -1,0 +1,25 @@
+{% extends "AdminBundle::admin_layout.html.twig" %}
+
+{% block menu %}
+	{{ knp_menu_render('AdminBundle:Builder:adminMenu') }}
+{% endblock %}
+
+{% block rastro %}{{ wo_render_breadcrumbs() }}{% endblock %}
+
+{% block titulo %}Nueva empresa{% endblock %}
+
+
+{% block cuerpo %}
+
+<form action="{{ path('cargo_update', { 'id': entity.id }) }}" method="post" {{ form_enctype(edit_form) }}>
+    <fieldset>
+    	<legend>Datos del cargo</legend>
+    	{{ form_widget(edit_form) }}
+    </fieldset>
+    
+    <button class="btn btn-success" type="submit">
+        <span class="label">Modificar</span>
+    </button>
+    <a href="{{ path('cargo_show', {'id': entity.id}) }}" class="btn"><span class="label">Detalle del cargo</span></a>    
+</form>
+{% endblock %}
