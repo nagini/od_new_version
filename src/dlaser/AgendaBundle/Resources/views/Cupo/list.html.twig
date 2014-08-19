@@ -220,7 +220,8 @@
 	                                            "<option value='RE'>Reprogramar</option>"+
 	                                          "</select>"+
 	                                          "</td>");
-	                                    $("#reservas tbody").append("<td><a class='btn' href='#' onClick='showDialog("+id+", "+agenda+"); return false;'>Aceptar</a></td>");
+	                                    $("#reservas tbody").append("<td><a class='btn' data-loading-text='Cargando...' href='#' onClick='showDialog("+id+", "+agenda+"); return false;'>Aceptar</a></td>");
+	                                    
                                   }else{
 	                                	  $("#reservas tbody").append("<td></td>");
 	                                      $("#reservas tbody").append("<td></td>"); 
@@ -242,8 +243,8 @@
                			+	"</p>"
                			+"</div>"
                			+"<div class='modal-footer'>"				
-               			+	"<button class='btn btn-primary' onClick='selectAction("+id+", "+agenda+"); return false;'>Save</button>"
-               			+	"<button class='btn btn-danger' data-dismiss='modal' aria-hidden='true'>Close</button>"
+               			+	"<button class='btn btn-primary' onClick='selectAction("+id+", "+agenda+"); return false;'>Aceptar</button>"
+               			+	"<button class='btn btn-danger' data-dismiss='modal' aria-hidden='true'>Cerrar</button>"
                			+"</div>"
                		+"</div>");
             		});

@@ -49,7 +49,7 @@
                     tabla += '<caption>Agenda medica</caption>';
                     tabla += '<thead>';
                     tabla += '<tr>';
-                    tabla += '<th>Hora</th><th>Facturado</th><th>Identificación</th><th>Paciente</th><th>Actividad</th><th>Observación</th><th>Estado</th><th>Opcion</th><th>Acción</th>';
+                    tabla += '<th>Hora</th><th>Facturado</th><th>Identificación</th><th>Paciente</th><th>Actividad</th><th>Estado</th><th>Opcion</th><th>Acción</th>';
                     tabla += '</tr>';
                     tabla += '</thead>';
                     tabla += '<tbody>';
@@ -65,26 +65,26 @@
                         tr += '<td>'+val.fecha+'</td>';
                         tr += '<td>'+val.identificacion+'</td>';
                         tr += '<td>'+val.priNombre+" "+val.segNombre+" "+val.priApellido+" "+val.segApellido+'</td>';                        
-                        tr += '<td>'+val.cargo+'</td>';                        
-                        tr += '<td>'+val.observacion+'</td>';
+                        tr += '<td>'+val.cargo+'</td>';                      
                         tr += '<td>'+val.estado+'</td>';
                         
                         tr += "<td>"+
                   				"<select class='span2' id='select"+val.id+"'>"+
                 		  			  "<option value='' selected>Opciones</option>"+
 			                          "<option value='PN'>Programar Nueva</option>"+
+			                          "<option value='FI'>Finalizado</option>"+
 			                          "<option value='DE'>Desertor</option>"+
 			                          "<option value='NO'>No Inicia</option>"+
                         		"</select>"+
                         	  "</td>";
 
-						tr += "<td><a class='btn' href='#' onClick='showDialog("+val.id+"); return false;'>Aceptar</a></td>";                        
+						tr += "<td><button type='button' class='btn' data-loading-text='Cargando...'  onClick='showDialog("+val.id+"); return false;'>Aceptar</button></td>";                        
                         tr += '</tr>';                               
 
                         dialog += "<div id='myModal"+val.id+"' class='modal hide fade' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>"
                						+"<div class='modal-header'>"
                						+	 "<button type='button' class='close' data-dismiss='modal' aria-hidden='true'>×</button>"
-               						+	 "<h3 id='myModalLabel'>Motivo cancelacion de la cita</h3>"
+               						+	 "<h3 id='myModalLabel'>Agregar observacion del paciente</h3>"
                						+"</div>"
                						+"<div class='modal-body'>"
                						+	"<textarea class='span6' placeholder='Ingrese el motivo'  id='CA_motivo"+val.id+"'></textarea>"
@@ -93,8 +93,8 @@
                						+	"</p>"
                						+"</div>"
                						+"<div class='modal-footer'>"				
-               						+	"<button class='btn btn-primary' onClick='selectAction("+val.id+"); return false;'>Save</button>"
-               						+	"<button class='btn btn-danger' data-dismiss='modal' aria-hidden='true'>Close</button>"
+               						+	"<button class='btn btn-primary' onClick='selectAction("+val.id+"); return false;'>Aceptar</button>"
+               						+	"<button class='btn btn-danger' data-dismiss='modal' aria-hidden='true'>Cerrar</button>"
                						+"</div>"
                					+"</div>";
                         
@@ -158,9 +158,7 @@
          if(data.responseCode==200 ){
          	$('#ajaxMsg').html(data.msg);
              $('#ajaxMsg').css("color","green");
-
-             var ruta = "{{ path('agenda_medica_list') }}";				
-			 $(location).attr('href',ruta);             
+             location.reload();            
          }
          else if(data.responseCode==400){
          	$('#ajaxMsg').html(data.msg);

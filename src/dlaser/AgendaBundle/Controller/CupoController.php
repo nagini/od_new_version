@@ -77,6 +77,7 @@ class CupoController extends Controller
         	$cupo->setPaciente($paciente);
         	$cupo->setCargo($cargo);
         	$cupo->setEstado('A');
+        	$cupo->setNota('');
         	$cupo->setAgenda($agenda);        	
         	$cupo->setCliente($entity['cliente']);
         	
@@ -334,7 +335,7 @@ class CupoController extends Controller
             		'RE'=>'Reprogramado','CO'=>'Confirmado',
             		'CU'=>'Cumplida','IN'=>'Incumplida',
             		'PN'=>'Programar Nueva','DE'=>'Desertor',
-            		'NO'=>'NO Inicia'
+            		'NO'=>'NO Inicia', 'FI' => 'Finalizado'
             		);            
             
             
@@ -392,7 +393,7 @@ public function ajaxBuscarCupoAction() {
 						'RE'=>'Reprogramado','CO'=>'Confirmado',
 						'CU'=>'Cumplida','IN'=>'Incumplida',
 						'PN'=>'Programar Nueva','DE'=>'Desertor',
-						'NO'=>'NO Inicia'
+						'NO'=>'NO Inicia', 'FI' => 'Finalizado'
 						);				
 				
 				$response = array("responseCode" => 200);

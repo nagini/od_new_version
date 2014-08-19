@@ -10,17 +10,17 @@
 
 
 {% block cuerpo %}
-	<strong>Sede:</strong>
-		<span>{{ sede.nombre }}</span><br />
+	<span class="label label-inverse">Sede:</span>
+		<span class="label label-info">{{ sede.nombre }}</span><br />
 		
-	<label>Medico:</label>
-		<span>{{ usuario.nombre }} {{ usuario.apellido }}</span><br />
+	<span class="label label-inverse">Medico:</span>
+		<span class="label label-info">{{ usuario.nombre }} {{ usuario.apellido }}</span><br />
 		
-	<label>Desde:</label>
-		<span>{{ f_i }}</span><br />
+	<span class="label label-inverse">Desde:</span>
+		<span class="label label-info">{{ f_i }}</span><br />
 		
-	<label>Hasta:</label>
-		<span>{{ f_f }}</span>
+	<span class="label label-inverse">Hasta:</span>
+		<span class="label label-info">{{ f_f }}</span>
 
     <table>
         <thead>
@@ -28,8 +28,7 @@
                 <th>No.</th>
                 <th>Tipo</th>
                 <th>Identificación</th>
-                <th>Fecha</th>
-                <th>Orden</th>
+                <th>Fecha</th>                
                 <th>Paciente</th>
                 <th>Actividad</th>
                 <th>Valor</th>                
@@ -45,10 +44,9 @@
                 <td>{{ entity.id }}</td>
                 <td>{{ entity.tipoId }}</td>
                 <td>{{ entity.identificacion }}</td>
-                <td>{{ entity.fecha|date('d-m-Y') }}</td>
-                <td>{{ entity.autorizacion }}</td>
+                <td>{{ entity.fecha|date('d-m-Y') }}</td>                
                 <td><a href="{{ path('paciente_edit', { 'id': entity.paciente }) }}" target="popup" title="Modificar admisión" onClick="popup(this.href,750,600); return false;">{{ entity.priNombre|capitalize }} {{ entity.segNombre|capitalize }} {{ entity.priApellido|capitalize }} {{ entity.segApellido|capitalize }}</a></td>
-                <td>{{ entity.cups }}</td>
+                <td>{{ entity.cargo }}</td>
                 <td>{{ entity.valor }}</td>                
                 <td>{{ mylist[entity.estado]}}</td>	               
             </tr>
@@ -68,7 +66,7 @@
     		<input type="hidden" name="f_inicio" value="{{ f_i }}" />
     		<input type="hidden" name="f_fin" value="{{ f_f }}" />
     		
-    		<button class="btn btn-success" type="submit">Exportar a PDF</button>
+    		<!--<button class="btn btn-success" type="submit">Exportar a PDF</button>-->
     		
     	</form>
     {% endif %}

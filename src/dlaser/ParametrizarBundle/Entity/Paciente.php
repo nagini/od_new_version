@@ -97,7 +97,7 @@ class Paciente
     private $sexo;
 
     /**
-     * @var integer $mupio
+     * @var integer $depto
      * 
      * @ORM\Column(name="depto", type="integer", nullable=false)
      * @Assert\NotBlank(message="El valor ingresado no puede estar vacio.")

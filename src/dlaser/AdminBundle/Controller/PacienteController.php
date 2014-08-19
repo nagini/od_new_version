@@ -130,7 +130,8 @@ class PacienteController extends Controller
         $entity  = new Paciente();
         $request = $this->getRequest();
         $form    = $this->createForm(new PacienteType(), $entity);
-        $form->bind($request);
+        $form->bind($request);        
+        
     
         if ($form->isValid()) {
              
@@ -235,7 +236,8 @@ class PacienteController extends Controller
     
         $editForm   = $this->createForm(new PacienteType(), $entity);    
         $request = $this->getRequest();    
-        $editForm->bind($request);
+        $editForm->handleRequest($request);        
+        
     
         if ($editForm->isValid()) {
     

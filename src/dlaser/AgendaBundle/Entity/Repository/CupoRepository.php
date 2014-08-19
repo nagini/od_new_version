@@ -6,37 +6,73 @@ use Doctrine\ORM\EntityRepository;
 class CupoRepository extends EntityRepository
 {
 	
-	public function findInformeGeneral($con_sede,$desde,$hasta)
+	public function findInformeGeneral($con_sede,$desde,$hasta, $estado)
 	{
 		$em = $this->getEntityManager();
-		$dql= " SELECT
-					COUNT(c.estado) AS cantidad,
-					car.nombre,
-			    	car.cups,					
-					a.fechaInicio,
-					c.estado,
+		$dql= " SELECT		
+					
+					c.hora as horaCupo,
+					c.nota,											
+					c.verificacion,
+					a.fechaInicio as fechaAgenda,
 					a.nota as agenda,
-					s.nombre as sede
-    			FROM
-    				AgendaBundle:Cupo c
-    			JOIN
-    				c.cargo car
-    			JOIN
-    				c.paciente p
-    			JOIN
-    				c.agenda a
-				JOIN
-    				a.sede s
+    				p.priNombre,
+    				p.segNombre,
+    				p.priApellido,
+    				p.segApellido,
+					p.identificacion,
+					p.movil,
+	    			car.nombre as cargo	
+    			FROM AgendaBundle:Cupo c
+    				LEFT JOIN c.paciente p
+    				LEFT JOIN c.cargo car
+					LEFT JOIN c.agenda a
+    				LEFT JOIN a.sede s
     			WHERE
 			    	c.hora > :inicio AND
-			    	c.hora <= :fin
+			    	c.hora <= :fin AND
+					c.estado = :estado
 			    	".$con_sede."
-			    GROUP BY c.estado, c.cargo, c.agenda, a.sede  ORDER BY c.estado ASC";
+			    ORDER BY p.priNombre ASC";
 	
 		$query = $em->createQuery($dql);
 	
 		$query->setParameter('inicio', $desde);
 		$query->setParameter('fin', $hasta);
+		$query->setParameter('estado', $estado);
+			
+		return $query->getResult();
+	}
+	
+	public function findInformePaciente($paciente)
+	{
+		$em = $this->getEntityManager();
+		$dql= " SELECT
+			
+					c.hora as horaCupo,
+					c.nota,
+					c.verificacion,
+					c.estado,
+					a.fechaInicio as fechaAgenda,
+					a.nota as agenda,
+	    			car.nombre as cargo
+    			FROM AgendaBundle:Cupo c
+    				LEFT JOIN c.paciente p
+    				LEFT JOIN c.cargo car
+					LEFT JOIN c.agenda a
+    				LEFT JOIN a.sede s
+    			WHERE			    	
+			    	c.hora < :fecha AND					
+					p.id = :paciente			    	
+			    ORDER BY c.estado, c.hora DESC";
+	
+		$query = $em->createQuery($dql);
+	
+		
+        $fecha = new \DateTime('now');
+        $query->setParameter('paciente', $paciente);
+        $query->setParameter('fecha', $fecha->format('Y-m-d 23:59:00'));
+		
 			
 		return $query->getResult();
 	}
@@ -77,40 +113,7 @@ class CupoRepository extends EntityRepository
 		return $query->getResult();
 	}
 
-	public function findInformePaciente($con_sede,$desde,$hasta)
-	{
-		$em = $this->getEntityManager();
-		$dql= " SELECT			    	
-					COUNT(c.estado) AS cantidad,					
-					c.estado,
-					p.priNombre, 
-                    p.segNombre, 
-                    p.priApellido, 
-                    p.segApellido,
-					p.identificacion,
-					p.movil,					
-					s.nombre as sede
-    			FROM
-    				AgendaBundle:Cupo c    			
-    			JOIN
-    				c.paciente p
-				JOIN
-    				c.agenda a		    			
-				JOIN
-    				a.sede s				
-    			WHERE
-			    	c.hora > :inicio AND
-			    	c.hora <= :fin
-			    	".$con_sede."
-			    GROUP BY c.estado, p.id ORDER BY p.id ASC";
 	
-		$query = $em->createQuery($dql);
-	
-		$query->setParameter('inicio', $desde);
-		$query->setParameter('fin', $hasta);
-			
-		return $query->getResult();
-	}
 	
 	public function findInformeAgenda($con_sede,$desde,$hasta)
 	{
@@ -173,6 +176,36 @@ class CupoRepository extends EntityRepository
 		$fecha = new \DateTime('now');
 		$query->setParameter('fechaI', $fecha->format('Y-m-d 00:00:00'));
 		$query->setParameter('identificacion', $valor);
+		
+		return  $query->getArrayResult();
+	}
+	
+	public function findAppointments($sede)
+	{
+		$em = $this->getEntityManager();
+		$dql= 		"SELECT 
+						c.id,	    				
+						c.estado,						
+						c.verificacion,
+	    				p.priNombre,
+	    				p.segNombre,
+	    				p.priApellido,
+	    				p.segApellido,
+						p.identificacion,
+						p.movil,
+	    				car.nombre as cargo	    				
+    				FROM AgendaBundle:Cupo c
+    				LEFT JOIN c.paciente p
+    				LEFT JOIN c.cargo car
+					LEFT JOIN c.agenda a
+    				LEFT JOIN a.sede s
+    				WHERE
+    					s.id = :sede AND
+    					c.estado = 'PN'
+    				ORDER BY c.hora ASC";
+		
+		$query = $em->createQuery($dql);	
+		$query->setParameter('sede', $sede);
 		
 		return  $query->getArrayResult();
 	}

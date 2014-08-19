@@ -782,7 +782,7 @@ class FacturaController extends Controller
 			    	p.segNombre,
 			    	p.priApellido,
 			    	p.segApellido,
-			    	c.cups,
+			    	c.nombre as cargo,
 			    	f.valor,
 			    	f.copago,
 			    	f.descuento,

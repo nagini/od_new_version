@@ -35,6 +35,14 @@ ajx_agenda_lista:
     defaults: { _controller: AgendaBundle:Agenda:ajaxLista }
     requirements:
         _method:  POST
+        
+agenda_list_new_citas:
+    pattern:  /list/scheduling/appointments
+    defaults: { _controller: AgendaBundle:Agenda:listNewProgrammer }
+    
+agenda_list_appointments:
+    pattern:  /list/scheduling/{sede}/appointments
+    defaults: { _controller: AgendaBundle:Agenda:appointments }
     
 #************** Restricción ***************#
     

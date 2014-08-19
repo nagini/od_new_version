@@ -19,7 +19,7 @@
 {% block body %}
 	<section id="wrapper">
 		<div class="container_16">{% block rastro %}{% endblock %}</div>
-		<div class="container_16"><h1 id="titulo">{% block titulo %}{% endblock %}</h1></div>
+		<div class="container_16"><h2>{% block titulo %}{% endblock %}</h2></div>
 		<div class="container_16">
 		{% block msg %}
 				{% for flashMessage in app.session.flashbag.get('ok') %}	

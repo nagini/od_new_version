@@ -6,39 +6,53 @@
 
 {% block rastro %}{{ wo_render_breadcrumbs() }}{% endblock %}
 
-{% block titulo %}Reporte General{% endblock %}
+{% block titulo %}Informe de Citas, estado de {{misEstados[estado]}}{% endblock %}
+
+{% set misEstados = {'A':'Asignado','CA':'Cancelado','RE':'Reprogramado','CO':'Confirmado','CU':'Cumplido','IN':'Incumplido','PN':'Programado Nueva Cita','DE':'Desertor','NO':'No iniciada','FI':'Finalizado'} %}
 
 
 {% block cuerpo %}
-
-{% set mylist = {'F': 'CUMPLIDA', 'A': 'NO ASISTIDA', 'C': 'CANCELADA'} %}
-<div>
-		<table border="1">
-			<thead> 
-				<tr>
-					<th><b> Fecha Agenda		</b></th>
-					<th><b> Codigo Cargo		</b></th>		
-					<th><b> Nombre Cargo		</b></th>
-					<th><b> Cantidad 			</b></th>
-					<th><b> Estado				</b></th>
-					<th><b> Nombre Agenda		</b></th>
-					<th><b> Sede				</b></th>							
-				</tr>
-			</thead>
-			<tbody>
-				{% for entity in entities %}
-					<tr>
-						<td>{{ entity.fechaInicio | date('d/m/Y H:i')}}</td>						
-						<td>{{ entity.cups}}</td>
-						<td>{{ entity.nombre}}</td>
-						<td>{{ entity.cantidad }}</td>
-						<td>{{ mylist[entity.estado]}}</td>
-						<td>{{ entity.agenda }}</td>
-						<td>{{ entity.sede }}</td>						
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-	</div>
-	      		
+            
+    {% if cupos %}
+	    <div>
+	    <h5>Informe realizado entre las fechas 
+	    		<span class="label label-success">{{ dateStart | date('d/m/Y') }} </span> hasta 
+	    		<span class="label label-success">{{ dateEnd | date('d/m/Y') }} </span>
+	    </h5>
+	        <table>
+	            <thead>
+	                <tr>
+	                	<th>##</th>
+	                	<th>Identificacion</th>	                                      
+	                    <th>Paciente</th>
+	                    <th>Movil</th>
+	                    <th>Fecha Agenda</th>
+	                    <th>Fecha Cita</th>
+	                    <th>Agenda</th>
+	                    <th>Nota</th>
+	                    <th>Observacion</th>	                    
+	                    <th>Actividad</th>	                                        
+	                </tr>
+	            </thead>
+	            <tbody>
+	            	{% for cupo in cupos %}
+	            		<tr>
+	            			<td>{{ loop.index}}</td>
+	            			<td>{{ cupo.identificacion }}</td>
+	            			<td><span class="label label-info">{{ cupo.priNombre }} {{ cupo.priApellido }}</span></td>
+	            			<td>{{ cupo.movil }}</td>	            			
+	            			<td>{{ cupo.fechaAgenda | date('d/m/Y') }}</td>
+	            			<td>{{ cupo.horaCupo | date('h:i') }}</td>
+	            			<td>{{ cupo.agenda }}</td>	            			
+	            			<td>{{ cupo.nota }}</td>	         	         	            			
+	            			<td>{{ cupo.verificacion }}</td>      			
+	            			<td>{{ cupo.cargo }}</td>	            			        			
+	            		</tr>
+	            	{% endfor %}	            	
+	            </tbody>
+	        </table>       
+	    </div>
+	    {% else %}
+	     <h5>No hay información disponible</h5>
+    {% endif %}    
 {% endblock %}

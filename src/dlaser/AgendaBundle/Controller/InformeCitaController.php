@@ -40,29 +40,17 @@ class InformeCitaController extends Controller
             throw $this->createNotFoundException('El paciente solicitado no existe.');
         }
         
-        $query = $em->createQuery(' SELECT        							
-				                    c.hora,
-				                    c.estado,
-				                    c.nota,
-				                    car.nombre
-				                    FROM AgendaBundle:Cupo c
-				                    LEFT JOIN c.paciente p
-				                    LEFT JOIN c.cargo car
-				                    WHERE p.id = :paciente and c.hora < :fecha
-				                    ORDER BY c.hora DESC, c.estado ASC');
+        $entity = $em->getRepository("AgendaBundle:Cupo")->findInformePaciente($paciente->getId());
         
-        
-        $query->setParameter('paciente', $paciente->getId());
-        $fecha = new \DateTime('now');
-        $query->setParameter('fecha', $fecha->format('Y-m-d 23:59:00'));
-        $cupo = $query->getArrayResult();
+        $paginator = $this->get('knp_paginator');
+        $entity = $paginator->paginate($entity, $this->getRequest()->query->get('page', 1),25);
         
         $breadcrumbs = $this->get("white_october_breadcrumbs");
         $breadcrumbs->addItem("Inicio", $this->get("router")->generate("empresa_list"));
         $breadcrumbs->addItem("Informe de pacientes");
         
         $html = $this->render('AgendaBundle:InformeCita:informe_personal_pacientes.html.twig', array(
-        		'entity' => $cupo,
+        		'cupos' => $entity,
         		'paciente' => $paciente
         ));          
         
@@ -98,33 +86,21 @@ class InformeCitaController extends Controller
 			$con_sede = "AND a.sede =".$sede;
 		}else{
 			$con_sede = "";
-		}	
-		
+		}			
 		
 		$breadcrumbs = $this->get("white_october_breadcrumbs");
 		$breadcrumbs->addItem("Inicio", $this->get("router")->generate("empresa_list"));
 		$breadcrumbs->addItem("Informe Cupos");
 		
-		switch ($option)
-		{
-			case 'A':
-				$entity = $em->getRepository('AgendaBundle:Cupo')->findInformeAgenda($con_sede,$dateStart,$dateEnd);
-				$html = "informe_por_agenda.html.twig";
-				break;
-			case 'P':
-				$entity = $em->getRepository('AgendaBundle:Cupo')->findInformePaciente($con_sede,$dateStart,$dateEnd);
-				$html = "informe_por_paciente.html.twig";
-				break;
-			case 'C':
-				$entity = $em->getRepository('AgendaBundle:Cupo')->findInformeCargo($con_sede,$dateStart,$dateEnd);
-				$html = "informe_por_cargo.html.twig";
-				break;
-			case 'G':
-				$entity = $em->getRepository('AgendaBundle:Cupo')->findInformeGeneral($con_sede,$dateStart,$dateEnd);
-				$html = "informe_general.html.twig";
-				break;
-		}		
+		$entity = $em->getRepository('AgendaBundle:Cupo')->findInformeGeneral($con_sede,$dateStart,$dateEnd, $option);
+		$html = "informe_general.html.twig";		
+				
 	
-		return $this->render('AgendaBundle:InformeCita:'.$html, array('entities' => $entity,));
+		return $this->render('AgendaBundle:InformeCita:'.$html,
+				 array('cupos' => $entity,
+				 		'estado'=>$option,
+				 		'dateStart' => $dateStart,
+				 		'dateEnd' => $dateEnd,
+				 		));
 	}
 }

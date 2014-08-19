@@ -48,7 +48,7 @@
 	                <td>{{ loop.index }}</td>
 	                <td><a class="btn btn-link" href="{{ path('paciente_show', {'id':entity.id}) }}">{{ entity.identificacion }}</a></td>
 	                <td>{{ entity.priNombre }} {{ entity.segNombre }} {{ entity.priApellido }} {{ entity.segApellido }}</td>
-	                <td><a class="btn btn-link" href="{{ path('informe_tipo_paciente', {'paciente':entity.id}) }}">Informe</a></td>
+	                <td><a class="btn" href="{{ path('informe_tipo_paciente', {'paciente':entity.id}) }}"><i class="icon-list"></i>Informe</a></td>
 	            </tr>
 	         {% else %}
 	         	<tr>

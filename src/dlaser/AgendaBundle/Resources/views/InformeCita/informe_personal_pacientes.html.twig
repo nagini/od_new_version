@@ -12,33 +12,41 @@
 <h1><p align="center">Informe Citas Paciente {{ paciente.priNombre }} {{ paciente.segNombre }} {{ paciente.priApellido }} {{ paciente.segApellido }}</p></h1>
 	<h5> C.C :{{ paciente.identificacion }}  Movil : {{ paciente.movil }}</h5>
 
-{% set mylist = {'F': 'CUMPLIDA', 'A': 'NO ASISTIDA', 'C': 'CANCELADA'} %}
-
- <table>
- 	<thead>
-		<tr>
-	    	<th>No</th>	        
-	        <th>Fecha</th>
-	        <th>Estado</th>
-	        <th>Nota</th>
-	        <th>Actividad</th>          
-		</tr>  
-	</thead>
-    <tbody>
-    	<!-- la suma de los cliente se esta manejando por medio de los id de los clientes q se encuentran creados en la base de datos.-->
-    	{% set mylist = {'F': 'CUMPLIDA', 'A': 'NO ASISTIDA', 'C': 'CANCELADA'} %}
-		
-		
-		{% for entities in entity %}						
-        	<tr>
-            	<td>{{ loop.index }}</td>
-            	<td>{{ entities.hora | date('d-m-Y h:i') }}</td>
-            	<td>{{ mylist[entities.estado] }}</td>
-            	<td>{{ entities.nota }}</td>                
-                <td>{{ entities.nombre }}</td>
-			</tr>
-        {% endfor %}       
-	</tbody>
-</table>	
-	      		
+{% if cupos %}
+	{% set misEstados = {'A':'Asignado','CA':'Cancelado','RE':'Reprogramado','CO':'Confirmado','CU':'Cumplido','IN':'Incumplido','PN':'Programado Nueva Cita','DE':'Desertor','NO':'No iniciada','FI':'Finalizado'} %}
+	    <div>	    
+	        <table>
+	            <thead>
+	                <tr>
+	                	<th>##</th>
+	                	<th>Estado</th>	
+	                    <th>Fecha Agenda</th>
+	                    <th>Fecha Cita</th>
+	                    <th>Agenda</th>
+	                    <th>Nota</th>
+	                    <th>Observacion</th>	                    
+	                    <th>Actividad</th>	                                        
+	                </tr>
+	            </thead>
+	            <tbody>
+	            	{% for cupo in cupos %}
+	            		<tr>
+	            			<td>{{ loop.index}}</td>
+							<td><span class="label label-info"> {{ misEstados[cupo.estado]}}</span></td>
+	            			<td>{{ cupo.fechaAgenda | date('d/m/Y') }}</td>
+	            			<td>{{ cupo.horaCupo | date('h:i') }}</td>
+	            			<td>{{ cupo.agenda }}</td>	            			
+	            			<td>{{ cupo.nota }}</td>	         	         	            			
+	            			<td>{{ cupo.verificacion }}</td>      			
+	            			<td>{{ cupo.cargo }}</td>	            			        			
+	            		</tr>
+	            	{% endfor %}	            	
+	            </tbody>
+	        </table>       
+	    </div>
+	    
+	    {{ knp_pagination_render(cupos) }}
+	    {% else %}
+	     <h5>No hay información disponible</h5>
+    {% endif %} 	
 {% endblock %}

@@ -305,8 +305,7 @@ class AgendaController extends Controller
                     p.segApellido,
                     cli.nombre as cliente,
                     car.nombre as cargo,
-                    car.cups,
-                    f.observacion,
+                    car.cups,                    
             		f.estado
                     FROM ParametrizarBundle:Factura f
                     LEFT JOIN f.cupo c
@@ -342,6 +341,7 @@ class AgendaController extends Controller
                 {
                 	$response['agenda'][$int]['hora'] = $mi_agenda['hora']->format('d/m/Y H:i');
                 	$response['agenda'][$int]['fecha'] = $mi_agenda['fecha']->format('d/m/Y H:i');
+                	$response['agenda'][$int]['estado'] = 'Pendiente';
                 	$int ++;
                 }
             }else{
@@ -410,5 +410,46 @@ class AgendaController extends Controller
     		return new Response($return,200,array('Content-Type'=>'application/json'));
     
     	}
+    }
+    
+    public function listNewProgrammerAction()
+    {
+    	$user = $this->get('security.context')->getToken()->getUser();    	
+    	$sedes = $user->getSede();    	
+    	
+    	$breadcrumbs = $this->get("white_october_breadcrumbs");
+    	$breadcrumbs->addItem("Inicio", $this->get("router")->generate("agenda_list"));
+    	$breadcrumbs->addItem("List programar citas", $this->get("router")->generate("agenda_list_new_citas"));
+    	
+    	return $this->render('AgendaBundle:Agenda:list_appointments.html.twig', array(
+    			'sedes' => $sedes,
+    			'cupos'	=> '',
+    	));   	
+    } 
+    
+    public function appointmentsAction($sede)
+    {
+    	$user = $this->get('security.context')->getToken()->getUser();
+    	$sedes = $user->getSede();
+    	
+    	$em = $this->getDoctrine()->getManager();
+    	$cupos = $em->getRepository('AgendaBundle:Cupo')->findAppointments($sede);
+    	
+    	
+    	if (!$cupos) {
+    		$this->get('session')->getFlashBag()->add('error', 'No hay citas a programar para la sede seleccionada.');
+    		
+    		return $this->render('AgendaBundle:Agenda:list_appointments.html.twig', array(
+    				'sedes' => $sedes,
+    				'cupos'	=> '',
+    		));
+    	} 
+    	
+    	$this->get('session')->getFlashBag()->add('ok', 'Listado de las citas a programar solicitadas por el medico.');
+    	
+    	return $this->render('AgendaBundle:Agenda:list_appointments.html.twig', array(
+    			'sedes' => $sedes,
+    			'cupos'	=> $cupos,
+    	));
     }
 }
