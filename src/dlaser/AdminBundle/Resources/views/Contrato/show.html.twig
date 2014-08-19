@@ -53,8 +53,8 @@
     </table>
     
     
-    <a href="{{ path('contrato_edit', {'id': contrato.id}) }}" class="btn"><span class="label">Modificar contrato</span></a>
-    <a href="{{ path('cliente_show', {'id': contrato.cliente.id}) }}" class="button middle"><span class="label">Regresar al listado</span></a>
+    <a href="{{ path('contrato_edit', {'id': contrato.id}) }}" class="btn">Modificar contrato</a>
+    <a href="{{ path('cliente_show', {'id': contrato.cliente.id}) }}" class="btn">Regresar al listado</a>
     
     
     <h2>Actividades contratadas</h2>
@@ -74,7 +74,7 @@
         {% for actividad in actividades %}
             <tr>
                 <td>{{ loop.index }}</td>
-                <td><a href="{{ path('actividad_show', {'contrato': contrato.id, 'cargo': actividad.cargo.id}) }}">{{ actividad.cargo.cups }}</a></td>
+                <td><a class="btn btn-link" href="{{ path('actividad_show', {'contrato': contrato.id, 'cargo': actividad.cargo.id}) }}">{{ actividad.cargo.cups }}</a></td>
                 <td>{{ actividad.cargo.nombre }}</td>
                 <td>{{ actividad.cargo.indicacion }}</td>
                 <td>
@@ -100,5 +100,5 @@
         </tbody>
     </table>
     
-    <a href="{{ path('actividad_new', { 'id': contrato.id }) }}" class="btn"><span class="label">Crear actividad</span></a>
+    <a href="{{ path('actividad_new', { 'id': contrato.id }) }}" class="btn">Crear actividad</a>
 {% endblock %}

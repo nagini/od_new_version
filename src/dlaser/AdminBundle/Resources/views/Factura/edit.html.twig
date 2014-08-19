@@ -17,10 +17,8 @@
     	{{ form_widget(edit_form) }}
     </fieldset>
     
-    <button class="btn btn-success" type="submit">
-        <span class="label">Modificar</span>
-    </button>
-    <a href="{{ path('factura_show', { 'id': entity.id }) }}" class="btn"><span class="label">Detalle de la admisión</span></a>
+    <button class="btn btn-success" type="submit">Modificar</button>
+    <a href="{{ path('factura_show', { 'id': entity.id }) }}" class="btn">Detalle de la admisión</a>
     
 </form>
 {% endblock %}

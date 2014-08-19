@@ -23,7 +23,7 @@
         {% for entity in entities %}
             <tr>
                 <td>{{ loop.index }}</td>
-                <td><a href="{{ path('cliente_show', {'id':entity.id}) }}">{{ entity.nit }}</a></td>
+                <td><a class="btn btn-link" href="{{ path('cliente_show', {'id':entity.id}) }}">{{ entity.nit }}</a></td>
                 <td>{{ entity.codEps }}</td>
                 <td>{{ entity.nombre }}</td>
             </tr>
@@ -35,5 +35,5 @@
         </tbody>
     </table>
     
-    <a href="{{ path('cliente_new') }}" class="btn"><span class="label">Nuevo cliente</span></a>
+    <a href="{{ path('cliente_new') }}" class="btn">Nuevo cliente</a>
 {% endblock %}

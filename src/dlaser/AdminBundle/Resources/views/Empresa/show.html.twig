@@ -25,8 +25,8 @@
     </table>
     
     
-    <a href="{{ path('empresa_edit', { 'id': entity.id }) }}" class="btn"><span class="label">Modificar empresa</span></a>
-    <a href="{{ path('empresa_list') }}" class="button middle"><span class="label">Regresar al listado</span></a>
+    <a href="{{ path('empresa_edit', { 'id': entity.id }) }}" class="btn">Modificar empresa</a>
+    <a href="{{ path('empresa_list') }}" class="btn">Regresar al listado</a>
     
     <h2>Sedes de la empresa</h2>
 
@@ -54,5 +54,5 @@
         </tbody>
     </table>
     
-    <a href="{{ path('sede_new', { 'id': entity.id }) }}" class="btn"><span class="label">Crear sede</span></a>
+    <a href="{{ path('sede_new', { 'id': entity.id }) }}" class="btn">Crear sede</a>
 {% endblock %}

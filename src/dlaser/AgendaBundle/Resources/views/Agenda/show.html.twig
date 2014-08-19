@@ -51,8 +51,8 @@
     </table>
     
     
-    <a href="{{ path('agenda_edit', { 'id': agenda.id }) }}" class="btn"><span class="label">Modificar agenda</span></a>
-    <a href="{{ path('agenda_list') }}" class="button middle"><span class="label">Regresar al listado</span></a> 
+    <a href="{{ path('agenda_edit', { 'id': agenda.id }) }}" class="btn">Modificar agenda</a>
+    <a href="{{ path('agenda_list') }}" class="btn">Regresar al listado</a> 
     
     <h2>Restricciones asociadas</h2>
     
@@ -76,8 +76,8 @@
                 <td>{{ restriccion.sede }}</td>
                 <td>{{ restriccion.cantidad }}</td>
                 <td>
-                    <a class="button" href="{{ path('restriccion_edit', {'id' : restriccion.id, 'agenda' : agenda.id }) }}" title="Modificar"><span class="icon icon145"></span></a>
-                    <a class="button" href="{{ path('restriccion_delete', {'id' : restriccion.id, 'agenda' : agenda.id }) }}" title="Eliminar"><span class="icon icon186"></span></a></td>
+                    <a class="btn" href="{{ path('restriccion_edit', {'id' : restriccion.id, 'agenda' : agenda.id }) }}" title="Modificar"><i class="icon-trash"></i></a>
+                    <a class="btn" href="{{ path('restriccion_delete', {'id' : restriccion.id, 'agenda' : agenda.id }) }}" title="Eliminar"><i class="icon-edit"></i></a></td>
             </tr>
          {% else %}
          	<tr>
@@ -87,5 +87,5 @@
         </tbody>
     </table>
     
-    <a href="{{ path('restriccion_new', { 'id': agenda.id }) }}" class="button right"><span class="label">Crear restricción</span></a>
+    <a href="{{ path('restriccion_new', { 'id': agenda.id }) }}" class="btn">Crear restricción</a>
 {% endblock %}

@@ -63,8 +63,8 @@
     </table>
     
     
-    <a href="{{ path('paciente_edit', { 'id': paciente.id }) }}" class="btn"><span class="label">Modificar paciente</span></a>
-    <a href="{{ path('paciente_list',{'char':'A'}) }}" class="button middle"><span class="label">Regresar al listado</span></a>
+    <a href="{{ path('paciente_edit', { 'id': paciente.id }) }}" class="btn">Modificar paciente</a>
+    <a href="{{ path('paciente_list',{'char':'A'}) }}" class="btn">Regresar al listado</a>
     
     <h2>Aseguradoras asociadas</h2>
     
@@ -74,9 +74,7 @@
         	{{ form_widget(form) }}
         </fieldset>
         
-        <button class="btn btn-success" type="submit">
-            <span class="label">Crear</span>
-        </button>        
+        <button class="btn btn-success" type="submit">Crear</button>        
     </form>
     
     <br /><br /><br /><br />  
@@ -97,7 +95,7 @@
                 <td>{{ loop.index }}</td>
                 <td>{{ afiliacion.cliente.nit }}</td>
                 <td>{{ afiliacion.cliente.nombre }}</td>
-                <td><a class="button" href="{{ path('afiliacion_delete', { 'paciente': afiliacion.paciente.id, 'cliente': afiliacion.cliente.id}) }}" title="Eliminar"><span class="icon icon186"></span></a></td>
+                <td><a class="btn" href="{{ path('afiliacion_delete', { 'paciente': afiliacion.paciente.id, 'cliente': afiliacion.cliente.id}) }}" title="Eliminar"><i class="icon-trash"></i></a></td>
             </tr>
          {% else %}
          	<tr>

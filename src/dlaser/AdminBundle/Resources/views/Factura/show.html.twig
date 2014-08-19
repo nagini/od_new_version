@@ -65,9 +65,9 @@
         </tbody>
     </table>
 
-<a href="{{ path('factura_imprimir', { 'id': entity.id }) }}" target="blank" class="button blue"><span class="label">Imprimir</span></a>
-<a href="{{ path('factura_edit', { 'id': entity.id }) }}" class="button blue"><span class="label">Modificar</span></a>
-<a href="{{ path('factura_search')}}" class="button center"><span class="label">Nueva Factura</span></a>
+<a href="{{ path('factura_imprimir', { 'id': entity.id }) }}" target="blank" class="btn btn-primary">Imprimir</a>
+<a href="{{ path('factura_edit', { 'id': entity.id }) }}" class="btn btn-success">Modificar</a>
+<a href="{{ path('factura_search')}}" class="btn">Nueva Factura</a>
 
 
 {% endblock %}

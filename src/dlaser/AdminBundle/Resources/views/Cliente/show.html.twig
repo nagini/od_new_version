@@ -29,8 +29,8 @@
     </table>
     
     
-    <a href="{{ path('cliente_edit', { 'id': cliente.id }) }}" class="btn"><span class="label">Modificar cliente</span></a>
-    <a href="{{ path('cliente_list') }}" class="button middle"><span class="label">Regresar al listado</span></a>
+    <a href="{{ path('cliente_edit', { 'id': cliente.id }) }}" class="btn">Modificar cliente</a>
+    <a href="{{ path('cliente_list') }}" class="btn">Regresar al listado</a>
     
     <h2>Contratos</h2>
     
@@ -50,7 +50,7 @@
         {% for contrato in contratos %}
             <tr>
                 <td>{{ loop.index }}</td>
-                <td><a href="{{ path('contrato_show', { 'id': contrato.id }) }}">{{ contrato.contacto }}</a></td>
+                <td><a class="btn btn-link" href="{{ path('contrato_show', { 'id': contrato.id }) }}">{{ contrato.contacto }}</a></td>
                 <td>{{ contrato.telefono }} - {{ contrato.celular }}</td>
                 <td>{{ contrato.estado }}</td>
                 <td>{{ contrato.porcentaje * 100}}%</td>
@@ -65,6 +65,6 @@
         </tbody>
     </table>
     
-    <a href="{{ path('contrato_new', { 'id': cliente.id }) }}" class="btn"><span class="label">Crear contrato</span></a>
+    <a href="{{ path('contrato_new', { 'id': cliente.id }) }}" class="btn">Crear contrato</a>
 
 {% endblock %}

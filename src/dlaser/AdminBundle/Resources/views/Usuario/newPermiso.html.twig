@@ -28,7 +28,7 @@
                 <td><a href="{{ path('sede_show', {'id':permiso.id}) }}">{{ permiso.nombre }}</a></td>
                 <td>{{ permiso.ciudad }}</td>
                 <td>               
-    			<a><a href="{{ path('permiso_delete', { 'usuario': entity.id, 'sede': permiso.id }) }}" class="btn"><span class="label">Quitar</span></a>
+    			<a><a href="{{ path('permiso_delete', { 'usuario': entity.id, 'sede': permiso.id }) }}" class="btn">Quitar</a>
     			</td>
             </tr>
         {% endfor %} 
@@ -39,13 +39,13 @@
                 <td><a href="{{ path('sede_show', {'id':sede.id}) }}">{{ sede.nombre }}</a></td>
                 <td>{{ sede.ciudad }}</td>
                 <td>                    			
-    			<a href="{{ path('permiso_save', { 'usuario': entity.id, 'sede': sede.id }) }}" class="btn"><span class="label">Asignar</span></a>
+    			<a href="{{ path('permiso_save', { 'usuario': entity.id, 'sede': sede.id }) }}" class="btn">Asignar</a>
     			</td>   			
             </tr>
        {% endfor %}
       </tbody>
     </table>
     
-    <a href="{{ path('usuario_show', { 'id': entity.id }) }}" class="btn"><span class="label">Regresar al usuario</span></a>
+    <a href="{{ path('usuario_show', { 'id': entity.id }) }}" class="btn">Regresar al usuario</a>
 {% endblock %}
     

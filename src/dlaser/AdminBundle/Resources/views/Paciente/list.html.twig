@@ -17,9 +17,7 @@
     	{{ form_widget(form) }}
     </fieldset>
     
-    <button class="btn btn-success" type="submit">
-        <span class="label">Buscar</span>
-    </button>    
+    <button class="btn btn-success" type="submit">Buscar</button>    
 </form><br/><br/><br/>
 
     <table>
@@ -33,7 +31,9 @@
         </thead>
         <tbody>
 	        <tr>
-	        	<td colspan='3'><a href="{{ path('paciente_list', {'char':'A'}) }}">A</a><a href="{{ path('paciente_list', {'char':'B'}) }}">B</a><a href="{{ path('paciente_list', {'char':'C'}) }}">C</a>
+	        	<td colspan='4'>
+	        	<a href="{{ path('paciente_list', {'char':'A'}) }}">A</a>
+	        	<a href="{{ path('paciente_list', {'char':'B'}) }}">B</a><a href="{{ path('paciente_list', {'char':'C'}) }}">C</a>
 	        	<a href="{{ path('paciente_list', {'char':'D'}) }}">D</a><a href="{{ path('paciente_list', {'char':'E'}) }}">E</a><a href="{{ path('paciente_list', {'char':'F'}) }}">F</a>
 	        	<a href="{{ path('paciente_list', {'char':'G'}) }}">G</a><a href="{{ path('paciente_list', {'char':'H'}) }}">H</a><a href="{{ path('paciente_list', {'char':'I'}) }}">I</a>
 	        	<a href="{{ path('paciente_list', {'char':'J'}) }}">J</a><a href="{{ path('paciente_list', {'char':'K'}) }}">K</a><a href="{{ path('paciente_list', {'char':'L'}) }}">L</a>
@@ -46,9 +46,9 @@
 	        {% for entity in entities %}
 	            <tr>
 	                <td>{{ loop.index }}</td>
-	                <td><a href="{{ path('paciente_show', {'id':entity.id}) }}">{{ entity.identificacion }}</a></td>
+	                <td><a class="btn btn-link" href="{{ path('paciente_show', {'id':entity.id}) }}">{{ entity.identificacion }}</a></td>
 	                <td>{{ entity.priNombre }} {{ entity.segNombre }} {{ entity.priApellido }} {{ entity.segApellido }}</td>
-	                <td><a href="{{ path('informe_tipo_paciente', {'paciente':entity.id}) }}">Informe</a></td>
+	                <td><a class="btn btn-link" href="{{ path('informe_tipo_paciente', {'paciente':entity.id}) }}">Informe</a></td>
 	            </tr>
 	         {% else %}
 	         	<tr>
@@ -58,7 +58,7 @@
         </tbody>
     </table>   
     
-    <a href="{{ path('paciente_new') }}" class="btn"><span class="label">Nuevo paciente</span></a>
+    <a href="{{ path('paciente_new') }}" class="btn">Nuevo paciente</a>
     
      {% if entities %}
 		{{ knp_pagination_render(entities) }}

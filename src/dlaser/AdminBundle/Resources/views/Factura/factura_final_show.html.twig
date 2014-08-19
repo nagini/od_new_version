@@ -48,7 +48,7 @@
         </tbody>
     </table>
 
-<a href="{{ path('factura_final_imprimir', { 'id': entity.id }) }}" class="button blue"><span class="label">Imprimir</span></a>
-<a href="{{ path('factura_final_rips', { 'id': entity.id }) }}" class="button blue"><span class="label">Generar RIPS</span></a>
+<a href="{{ path('factura_final_imprimir', { 'id': entity.id }) }}" class="btn btn-primary">Imprimir</a>
+<a href="{{ path('factura_final_rips', { 'id': entity.id }) }}" class="btn btn-success">Generar RIPS</a>
 
 {% endblock %}
