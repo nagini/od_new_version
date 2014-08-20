@@ -25,11 +25,34 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script src="{{ asset('bundles/dlaser/js/jquery.chained.remote.js') }}"></script>
-    
     <script type="text/javascript" charset="utf-8">
-    	$(function() {    
-            $("#newPaciente_mupio").remoteChained("#newPaciente_depto", "{{ path('municipios', {'id': 1010 }) }}");
-        });     
+    $("#newPaciente_depto").change(function(){
+		
+		var url="{{ path('paciente_findDepto') }}";
+		var depto = $("#newPaciente_depto").val();
+
+		if(depto == ""){
+			   alert("Seleccione una opcion valida");
+			}
+
+			$.post(url,{
+				depto: depto
+				},function(data){
+					if(data.responseCode==200){
+
+						$('#newPaciente_mupio').empty();					
+
+						$.each(data.mupio, function(i, val) {
+							$('#newPaciente_mupio').append('<option value="'+val.id+'">'+val.municipio+'</option>');
+						});					
+					}
+					else if(data.responseCode==400){
+						alert("Ha ocurrido un error 400 información no disponible.");
+		             }
+		             else{
+		         	    alert("Ha ocurrido un error en el sistema.");
+		             }
+		        })
+	 }); 	    
     </script>
 {% endblock %}

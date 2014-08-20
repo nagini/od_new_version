@@ -1,0 +1,56 @@
+{% extends "AdminBundle::admin_layout.html.twig" %}
+
+{% block menu %}
+	{{ knp_menu_render('AdminBundle:Builder:adminMenu') }}
+{% endblock %}
+
+{% block rastro %}{{ wo_render_breadcrumbs() }}{% endblock %}
+
+{% block titulo %}Listado de citas a programar{% endblock %}
+
+
+{% block cuerpo %}
+    
+    <h5>Seleccione la sede<h5>
+    {% if sedes %}
+    	<div class="btn-group" data-toggle="buttons-radio">
+    	{% for sede in sedes %}
+			  <a href="{{ path('agenda_list_appointments',{'sede':sede.id}) }}" class="btn btn-success"><i class=" icon-refresh"></i>{{ sede.nombre }}</a>	  
+		{% endfor %}
+		</div>
+    {% endif %}
+        <br/><br/><br/>
+    {% if cupos %}
+	    <div>
+	        <table>
+	            <thead>
+	                <tr>
+	                    <th>Estado</th>	                    
+	                    <th>Observacion</th>
+	                    <th>Identificacion</th>	                                      
+	                    <th>Paciente</th>
+	                    <th>Movil</th>
+	                    <th>Actividad</th>
+	                    <th>Opciones</th>                    
+	                </tr>
+	            </thead>
+	            <tbody>
+	            	{% for cupo in cupos %}
+	            		<tr>
+	            			<td>Programar</td>	            			
+	            			<td>{{ cupo.verificacion }}</td>
+	            			<td>{{ cupo.identificacion }}</td>
+	            			<td>{{ cupo.priNombre }} {{ cupo.priApellido }}</td>
+	            			<td>{{ cupo.movil }}</td>
+	            			<td>{{ cupo.cargo }}</td>
+	            			<td>-</td>	            			
+	            		</tr>
+	            	{% endfor %}
+	            	
+	            </tbody>
+	        </table>       
+	    </div>
+    {% endif %}
+        
+    
+{% endblock %}

@@ -8,6 +8,9 @@ use dlaser\ParametrizarBundle\Entity\Paciente;
 use dlaser\ParametrizarBundle\Entity\Afiliacion;
 use dlaser\AdminBundle\Form\PacienteType;
 use dlaser\AdminBundle\Form\pacienteSearchType;
+
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Response;
 
 class PacienteController extends Controller
@@ -127,30 +130,52 @@ class PacienteController extends Controller
     
     public function saveAction()
     {
+    	
+    	$user = $this->get('security.context')->getToken()->getUser();
+    	
+    	if ($user->getPerfil() == 'ROLE_AUX') {
+    		$plantilla = 'ParametrizarBundle:Paciente:new.html.twig';
+    	}
+    	elseif ($user->getPerfil() == 'ROLE_ADMIN') {
+    		$plantilla = 'AdminBundle:Paciente:new.html.twig';
+    	}
+    	
         $entity  = new Paciente();
         $request = $this->getRequest();
         $form    = $this->createForm(new PacienteType(), $entity);
-        $form->bind($request);        
+        $form->bind($request);       
         
     
-        if ($form->isValid()) {
+        if ($form->isValid()) 
+        {
+        	// se optinen los objetos mupio y depto para agregar su respectivo id
+        	$depto = $form->get('depto')->getData();
+        	$mupio = $form->get('mupio')->getData();
+        	
+        	$identificacion = $form->get('identificacion')->getData();
+        	$em = $this->getDoctrine()->getEntityManager();
+        	$identificacion  = $em->getRepository('ParametrizarBundle:Paciente')->findByIdentificacion($identificacion);
+        	
+        	if($identificacion)
+        	{
+        		$this->get('session')->setFlash('error', 'El paciente con este numero de identificacion ya existe.');
+        		return $this->render($plantilla, array(
+        				'entity' => $entity,
+                		'form'   => $form->createView()
+        		));
+        	}
+        		
+        	$entity->setMupio($mupio->getId());
+        	$entity->setDepto($depto->getId());
              
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
     
             $this->get('session')->getFlashBag()->add('ok', 'El paciente ha sido creado éxitosamente.');      
-            return $this->redirect($this->generateUrl('paciente_show', array("id" => $entity->getId())));
-    
+            return $this->redirect($this->generateUrl('paciente_show', array("id" => $entity->getId())));    
         }        
-    	$user = $this->get('security.context')->getToken()->getUser();
-                
-        if ($user->getPerfil() == 'ROLE_AUX') {
-        	$plantilla = 'ParametrizarBundle:Paciente:new.html.twig';
-        }
-        elseif ($user->getPerfil() == 'ROLE_ADMIN') {
-        	$plantilla = 'AdminBundle:Paciente:new.html.twig';
-        } 
+    	 
     
         return $this->render($plantilla, array(
                 'entity' => $entity,
@@ -167,6 +192,11 @@ class PacienteController extends Controller
         if (!$paciente) {
             throw $this->createNotFoundException('El paciente solicitado no existe.');
         }
+        
+        $depto = $em->getRepository('ParametrizarBundle:Depto')->find($paciente->getDepto());
+        $mupio = $em->getRepository('ParametrizarBundle:Mupio')->find($paciente->getMupio());
+        $paciente->setDepto($depto->getNombre());
+        $paciente->setMupio($mupio->getMunicipio());
         
         $afiliaciones = $em->getRepository('ParametrizarBundle:Afiliacion')->findByPaciente($id);        
         $afiliacion = new Afiliacion();        
@@ -201,6 +231,11 @@ class PacienteController extends Controller
         if (!$entity) {
             throw $this->createNotFoundException('El paciente solicitado no existe');
         }
+        
+        $depto = $em->getRepository('ParametrizarBundle:Depto')->find($entity->getDepto());        
+        $mupio = $em->getRepository('ParametrizarBundle:Mupio')->find($entity->getMupio());
+        $entity->setDepto($depto);
+        $entity->setMupio($mupio);
     
         $editForm = $this->createForm(new PacienteType(), $entity);
         
@@ -239,7 +274,12 @@ class PacienteController extends Controller
         $editForm->handleRequest($request);        
         
     
-        if ($editForm->isValid()) {
+        if ($editForm->isValid()) 
+        {
+        	
+        	// se optinen los objetos mupio y depto para agregar su respectivo id
+        	$entity->setMupio($entity->getMupio()->getId());
+        	$entity->setDepto($entity->getDepto()->getId());
     
             $em->persist($entity);
             $em->flush();
@@ -325,6 +365,42 @@ class PacienteController extends Controller
     
         $return=json_encode($response);
         return new Response($return,200,array('Content-Type'=>'application/json'));
+    }
+    
+    
+    public function findDeptoAction()
+    {
+    	$request = $this->get('request');
+    	$depto = $request->request->get('depto');
+    
+    	if (is_numeric($depto)) {
+    
+    		$em = $this->getDoctrine()->getEntityManager();
+    		$depto = $em->getRepository('ParametrizarBundle:Depto')->find($depto);
+    
+    		if(!$depto)
+    		{
+    			throw $this->createNotFoundException('La informacion solicitada no existe');
+    		}
+    
+    		$query = $em->createQuery('SELECT m FROM ParametrizarBundle:Mupio m WHERE m.depto = :depto ORDER BY m.municipio ASC ');
+    		$query->setParameter('depto', $depto->getId());
+    		$mupio = $query->getArrayResult();
+    
+    		if ($mupio) {
+    				
+    			$response = array("responseCode" => 200);
+    
+    			foreach ($mupio as $key => $value) {
+    				$response['mupio'][$key] = $value;
+    			}
+    
+    		} else {
+    			$response = array("responseCode" => 400,"msg" => "No hay informacion para la opción seleccionada");
+    		}
+    		$return = json_encode($response);
+    		return new Response($return, 200,array('Content-Type' => 'application/json'));
+    	}
     }
 
 }

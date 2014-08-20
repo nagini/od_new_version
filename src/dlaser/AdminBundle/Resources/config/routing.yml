@@ -236,14 +236,15 @@ paciente_update:
     pattern:  /paciente/{id}/update
     defaults: { _controller: AdminBundle:Paciente:update }
     
-municipios:  
-    pattern: /mupio.{_format}/{id}
-    defaults: { _controller: AdminBundle:Paciente:municipios, _format: json}  
-    requirements: { _format: (xml|json), _method: GET }
-    
 paciente_buscar:
     pattern:  /paciente/buscar
     defaults: { _controller: AdminBundle:Paciente:ajaxBuscar }
+    requirements:
+        _method:  POST
+        
+paciente_findDepto:
+    pattern:  /paciente/findDepto
+    defaults: { _controller: AdminBundle:Paciente:findDepto }
     requirements:
         _method:  POST
     
