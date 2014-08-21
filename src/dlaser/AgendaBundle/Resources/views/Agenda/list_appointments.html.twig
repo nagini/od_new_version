@@ -43,7 +43,7 @@
 	            			<td>{{ cupo.priNombre }} {{ cupo.priApellido }}</td>
 	            			<td>{{ cupo.movil }}</td>
 	            			<td>{{ cupo.cargo }}</td>
-	            			<td>-</td>	            			
+	            			<td><a class="btn" href="{{ path('agenda_check_appointment',{'cupo':cupo.id}) }}" target="_blank"><i class="icon-ok"></i></a></td>	            			
 	            		</tr>
 	            	{% endfor %}
 	            	

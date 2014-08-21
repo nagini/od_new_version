@@ -335,7 +335,8 @@ class CupoController extends Controller
             		'RE'=>'Reprogramado','CO'=>'Confirmado',
             		'CU'=>'Cumplida','IN'=>'Incumplida',
             		'PN'=>'Programar Nueva','DE'=>'Desertor',
-            		'NO'=>'NO Inicia', 'FI' => 'Finalizado'
+            		'NO'=>'NO Inicia', 'FI' => 'Finalizado',
+            		'PD'=>'Programado'
             		);            
             
             
@@ -393,7 +394,8 @@ public function ajaxBuscarCupoAction() {
 						'RE'=>'Reprogramado','CO'=>'Confirmado',
 						'CU'=>'Cumplida','IN'=>'Incumplida',
 						'PN'=>'Programar Nueva','DE'=>'Desertor',
-						'NO'=>'NO Inicia', 'FI' => 'Finalizado'
+						'NO'=>'NO Inicia', 'FI' => 'Finalizado',
+						'PD'=>'Programado'
 						);				
 				
 				$response = array("responseCode" => 200);

@@ -452,4 +452,22 @@ class AgendaController extends Controller
     			'cupos'	=> $cupos,
     	));
     }
+    
+    public function checkAppointmentAction($cupo)
+    {
+    	$em = $this->getDoctrine()->getManager();
+    	$cupo = $em->getRepository('AgendaBundle:Cupo')->find($cupo);
+    	
+    	if (!$cupo) {
+    		$this->get('session')->getFlashBag()->add('error', 'La cita solicitada no existe.');    	
+    		return $this->redirect($this->generateUrl('agenda_list_new_citas'));
+    	}
+    	
+    	$cupo->setEstado('PD');
+    	$em->persist($cupo);
+    	$em->flush();
+    	
+    	return $this->redirect($this->generateUrl('cupo_new')); 	
+    	
+    }
 }

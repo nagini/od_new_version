@@ -34,7 +34,8 @@ class Builder extends ContainerAware
                         $menu['Agendamiento']->addChild('Citas', array('uri' => '#'));
 					$menu['Agendamiento']['Citas']->addChild('Listado', array('route' => 'cupo_list'));
 					$menu['Agendamiento']['Citas']->addChild('Nueva', array('route' => 'cupo_new'));
-					$menu['Agendamiento']['Citas']->addChild('Consultar', array('route' => 'cupo_search'));					
+					$menu['Agendamiento']['Citas']->addChild('Consultar', array('route' => 'cupo_search'));
+					$menu['Agendamiento']['Citas']->addChild('A Programar', array('route' => 'agenda_list_new_citas'));
 			
                         $menu->addChild('Informes', array('uri' => '#'));
                                         $menu['Informes']->addChild('Honorarios', array('route' => 'factura_reporte_medico'));
@@ -58,7 +59,8 @@ class Builder extends ContainerAware
                                         $menu['Agendamiento']->addChild('Citas', array('uri' => '#'));
 					$menu['Agendamiento']['Citas']->addChild('Listado', array('route' => 'cupo_list'));
 					$menu['Agendamiento']['Citas']->addChild('Nueva', array('route' => 'cupo_new'));
-					$menu['Agendamiento']['Citas']->addChild('Consultar', array('route' => 'cupo_search'));					
+					$menu['Agendamiento']['Citas']->addChild('Consultar', array('route' => 'cupo_search'));
+					$menu['Agendamiento']['Citas']->addChild('A Programar', array('route' => 'agenda_list_new_citas'));
 		}
 		
 		$actualUser = $securityContext->getToken()->getUser();

@@ -84,12 +84,13 @@
                         dialog += "<div id='myModal"+val.id+"' class='modal hide fade' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>"
                						+"<div class='modal-header'>"
                						+	 "<button type='button' class='close' data-dismiss='modal' aria-hidden='true'>×</button>"
-               						+	 "<h3 id='myModalLabel'>Agregar observacion del paciente</h3>"
+               						+	 "<h3 id='myModalLabel'>Observacion del paciente</h3>"
                						+"</div>"
                						+"<div class='modal-body'>"
+               						+	""+val.priNombre+" "+val.segNombre+" "+val.priApellido+" "+val.segApellido+""
                						+	"<textarea class='span6' placeholder='Ingrese el motivo'  id='CA_motivo"+val.id+"'></textarea>"
-               						+	"<p>"
-                   					+		"<strong>longitud de <em id='count"+val.id+"' ></em> caracteres.</strong>"
+               						+	"<p>"               						
+                   					+		"<br/><strong>longitud de <em id='count"+val.id+"' ></em> caracteres.</strong>"
                						+	"</p>"
                						+"</div>"
                						+"<div class='modal-footer'>"				
@@ -127,15 +128,11 @@
 		
 		if(estado != '')
 		{
-			if(estado == 'PN')
-		     {
-			     $('#myModal'+factura).modal('toggle');	
-			     maxlengthTextarea(factura);		     
+			
+		     $('#myModal'+factura).modal('toggle');	
+		     maxlengthTextarea(factura);		     
 			     		    	
-		     }else{
-		    	 	selectAction(factura);
-		    	 	$("#CA_motivo"+factura).val('');
-			     }
+		     
 		}else{
 				$('#ajaxMsg').html("Seleccione una opcion valida");
                 $('#ajaxMsg').css("color","red");
