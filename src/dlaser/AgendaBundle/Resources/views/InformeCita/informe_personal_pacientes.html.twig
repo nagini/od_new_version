@@ -13,9 +13,9 @@
 	<h5> C.C :{{ paciente.identificacion }}  Movil : {{ paciente.movil }}</h5>
 
 {% if cupos %}
-	{% set misEstados = {'A':'Asignado','CA':'Cancelado','RE':'Reprogramado','CO':'Confirmado','CU':'Cumplido','IN':'Incumplido','PN':'Programado Nueva Cita','DE':'Desertor','NO':'No iniciada','FI':'Finalizado', 'PD': 'Cita Programada'} %}
+	{% set misEstados = {'A':'Pendiente','CA':'Cancelado','RE':'Reprogramado','CO':'Incumplida la cita','CU':'Cumplido sin cita','IN':'Incumplido','PN':'Programar Nueva Cita','DE':'Desertor','NO':'No iniciada','FI':'Finalizado', 'PD': 'Cumplida con cita'} %}
 	    <div>	    
-	        <table>
+	        <table class="table table-hover">
 	            <thead>
 	                <tr>
 	                	<th>##</th>

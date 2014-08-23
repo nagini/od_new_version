@@ -23,7 +23,7 @@
     	
     	
     	<div id="cupos">
-        <table id="reservas">
+        <table id="reservas" class="table table-hover">
             <thead>
                 <tr>
                     <th>Hora</th>
@@ -31,7 +31,7 @@
                     <th>Nota</th>
                     <th>Paciente</th>
                     <th>Movil</th>
-                    <th>Actividad</th>
+                    <th>Procedimiento</th>
                     <th>Sede</th>
                     <th>Opciones</th>
                     <th>Accion</th>
@@ -98,15 +98,14 @@
                                   $("#reservas tbody").append("<td>"+val.movil+"</td>");
                                   $("#reservas tbody").append("<td>"+val.cargo+"</td>");
                                   $("#reservas tbody").append("<td>"+val.sede+"</td>");
-                                  if(val.estado == 'Asignado' || val.estado == "Confirmado" )
+                                  if(val.estado == '<span class="label label-info">Asignado</span>' || val.estado == '<span class="label label-warning">Confirmado</span>' )
                                   {
 	                            	  $("#reservas tbody").append("<td>"+
 	                                  		"<select class='span2' id='select"+id+"'>"+
 	                                  		  "<option value='' selected>Opciones</option>"+
 	                                            "<option value='CO'>Confirmado</option>"+
-	                                            "<option value='CU'>Cumplida</option>"+
-	                                            "<option value='CA'>Cancelado</option>"+
-	                                            "<option value='IN'>Incumplida</option>"+
+	                                            "<option value='CU'>Cumplida sin cita</option>"+
+	                                            "<option value='CA'>Cancelado</option>"+	                                            
 	                                            "<option value='RE'>Reprogramar</option>"+
 	                                          "</select>"+
 	                                          "</td>");

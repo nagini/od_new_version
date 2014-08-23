@@ -1,0 +1,40 @@
+{% extends "AdminBundle::admin_layout.html.twig" %}
+
+{% block menu %}
+	{{ knp_menu_render('AdminBundle:Builder:adminMenu') }}
+{% endblock %}
+
+{% block rastro %}{{ wo_render_breadcrumbs() }}{% endblock %}
+
+{% block titulo %}Listado De Los Medicos{% endblock %}
+
+
+{% block cuerpo %}
+
+
+	{% for medico in medicos %}
+	
+	<table class="table table-hover">
+        <thead>
+            <tr>                
+                <th colspan="3">
+                	<b>
+                		<smaill><span class="badge badge-important">{{ loop.index }}</span></smaill>
+                	</b>
+                	 <b class="lead">{{ medico.nombre | capitalize }} {{ medico.apellido | capitalize }}</b>
+              	</th>
+            </tr>
+        </thead>
+        <tbody >        
+            <tr>                
+                <td><span class="label label-info">Telefono:</span> <strong>{{ medico.telefono }}</strong></td>                
+                <td><span class="label label-info">Especialidad:</span> <strong>{{ medico.especialidad }}</strong></td>
+                <td colspan="2"><a href="{{ path('medico_agenda_sedes',{'medico':medico.id}) }}" class="btn btn-success">Ver Agenda Del Medico</a></td>                
+            </tr>
+        </tbody>
+    </table>
+	
+	{% else %}
+		<span class="label label-important">No se encuentran medicos disponibles</span>
+	{% endfor %}
+{% endblock %}

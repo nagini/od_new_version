@@ -331,9 +331,12 @@ class CupoController extends Controller
             $cupo = $query->getArrayResult();
             
             $estado = array(
-            		'A'=>'Asignado','CA'=>'Cancelado',
-            		'RE'=>'Reprogramado','CO'=>'Confirmado',
-            		'CU'=>'Cumplida','IN'=>'Incumplida',
+            		'A'=>'<span class="label label-info">Asignado</span>',
+            		'CA'=>'<span class="label label-important">Cancelado</span>',
+            		'RE'=>'Reprogramado',
+            		'CO'=>'<span class="label label-warning">Confirmado</span>',
+            		'CU'=>'<span class="label label-success">Cumplida</span>',
+            		'IN'=>'Incumplida',
             		'PN'=>'Programar Nueva','DE'=>'Desertor',
             		'NO'=>'NO Inicia', 'FI' => 'Finalizado',
             		'PD'=>'Programado'
@@ -357,14 +360,9 @@ class CupoController extends Controller
                 foreach($response['cupo'] as $mi_cupo)
                 {                	
                 	$response['cupo'][$int]['estado'] = $estado[$mi_cupo['estado']];
-                	$int ++;                		
-                }  
-                $int = 0;
-                foreach($response['cupo'] as $mi_cupo)
-                {
                 	$response['cupo'][$int]['hora'] = $mi_cupo['hora']->format('d/m/Y H:i');
-                	$int ++;
-                }              
+                	$int ++;                		
+                }
             }
     
             $return=json_encode($response);
@@ -390,12 +388,15 @@ public function ajaxBuscarCupoAction() {
 			$response = array("responseCode" => 400, "msg" => "No existen reservas para los parametros de consulta ingrasados.");
 		} else {
 				$estado = array(
-						'A'=>'Asignado','CA'=>'Cancelado',
-						'RE'=>'Reprogramado','CO'=>'Confirmado',
-						'CU'=>'Cumplida','IN'=>'Incumplida',
-						'PN'=>'Programar Nueva','DE'=>'Desertor',
-						'NO'=>'NO Inicia', 'FI' => 'Finalizado',
-						'PD'=>'Programado'
+						'A'=>'<span class="label label-info">Asignado</span>',
+	            		'CA'=>'<span class="label label-important">Cancelado</span>',
+	            		'RE'=>'Reprogramado',
+	            		'CO'=>'<span class="label label-warning">Confirmado</span>',
+	            		'CU'=>'<span class="label label-success">Cumplida</span>',
+	            		'IN'=>'Incumplida',
+	            		'PN'=>'Programar Nueva','DE'=>'Desertor',
+	            		'NO'=>'NO Inicia', 'FI' => 'Finalizado',
+	            		'PD'=>'Programado'
 						);				
 				
 				$response = array("responseCode" => 200);
@@ -409,11 +410,6 @@ public function ajaxBuscarCupoAction() {
 				foreach($response['cupo'] as $mi_cupo)
 				{
 					$response['cupo'][$int]['estado'] = $estado[$mi_cupo['estado']];
-					$int ++;
-				}
-				$int = 0;
-				foreach($response['cupo'] as $mi_cupo)
-				{
 					$response['cupo'][$int]['hora'] = $mi_cupo['hora']->format('d/m/Y H:i');
 					$int ++;
 				}

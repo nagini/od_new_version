@@ -16,7 +16,7 @@ class AgendaType extends AbstractType
         ->add('fecha_fin', 'datetime', array('widget' => 'single_text', 'format' => 'dd/MM/yyyy H:m', 'label' => 'Fecha de fin', 'required' => true, 'attr' => array('placeholder' => 'DIA/MES/AÑO HORA:MINUTO')))
         ->add('intervalo', 'integer', array('attr' => array('placeholder' => 'Ingrese el tiempo de atención'), 'required' => true))
         ->add('estado', 'choice', array('choices' => array('A' => 'Activa', 'I' => 'Inactiva'), 'required' => true))
-        ->add('nota', 'text', array('attr' => array('placeholder' => 'Ingrese su nota'), 'required' => false))
+        ->add('nota', 'text', array('label' => 'Nombre Agenda','attr' => array('placeholder' => 'Ingrese su nota'), 'required' => false))
         ->add('sede', 'entity', array(
                 'class' => 'dlaser\\ParametrizarBundle\\Entity\\Sede',
                 'required' => true,
@@ -28,6 +28,7 @@ class AgendaType extends AbstractType
         ))        
         ->add('usuario', 'entity', array(
                 'class' => 'dlaser\\UsuarioBundle\\Entity\\Usuario',
+        		'label' => 'Profesional',
                 'required' => true,
                 'empty_value' => 'Selecciona un usuario',
                 'query_builder' => function(EntityRepository $repositorio) {

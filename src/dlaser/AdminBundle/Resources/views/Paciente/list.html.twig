@@ -11,16 +11,23 @@
 
 {% block cuerpo %}
 
-<form action="{{ path('paciente_search') }}" method="post" {{ form_enctype(form) }}>
+<form action="{{ path('paciente_search') }}"  class="form-search" method="post" {{ form_enctype(form) }}>
     <fieldset>
-    	<legend>Busqueda</legend>
-    	{{ form_widget(form) }}
-    </fieldset>
-    
-    <button class="btn btn-success" type="submit">Buscar</button>    
-</form><br/><br/><br/>
+    	<legend>Busqueda</legend>    	
+    	
+    	<div class="input-append">	    	
+	    	{{ form_errors(form.nombre) }}
+	    	{{ form_widget(form.nombre) }}
+	    	{{ form_errors(form.option) }}
+    		{{ form_widget(form.option) }}
+	    	<button class="btn btn-success" type="submit">Buscar</button>
+    	</div>	
+    	
+    	{{ form_rest(form) }}
+    </fieldset>        
+</form>
 
-    <table>
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th>No.</th>
@@ -32,16 +39,21 @@
         <tbody>
 	        <tr>
 	        	<td colspan='4'>
-	        	<a href="{{ path('paciente_list', {'char':'A'}) }}">A</a>
-	        	<a href="{{ path('paciente_list', {'char':'B'}) }}">B</a><a href="{{ path('paciente_list', {'char':'C'}) }}">C</a>
-	        	<a href="{{ path('paciente_list', {'char':'D'}) }}">D</a><a href="{{ path('paciente_list', {'char':'E'}) }}">E</a><a href="{{ path('paciente_list', {'char':'F'}) }}">F</a>
-	        	<a href="{{ path('paciente_list', {'char':'G'}) }}">G</a><a href="{{ path('paciente_list', {'char':'H'}) }}">H</a><a href="{{ path('paciente_list', {'char':'I'}) }}">I</a>
-	        	<a href="{{ path('paciente_list', {'char':'J'}) }}">J</a><a href="{{ path('paciente_list', {'char':'K'}) }}">K</a><a href="{{ path('paciente_list', {'char':'L'}) }}">L</a>
-	        	<a href="{{ path('paciente_list', {'char':'M'}) }}">M</a><a href="{{ path('paciente_list', {'char':'N'}) }}">N</a><a href="{{ path('paciente_list', {'char':'O'}) }}">O</a>
-	        	<a href="{{ path('paciente_list', {'char':'P'}) }}">P</a><a href="{{ path('paciente_list', {'char':'Q'}) }}">Q</a><a href="{{ path('paciente_list', {'char':'R'}) }}">R</a>
-	        	<a href="{{ path('paciente_list', {'char':'S'}) }}">S</a><a href="{{ path('paciente_list', {'char':'T'}) }}">T</a><a href="{{ path('paciente_list', {'char':'U'}) }}">U</a>
-	        	<a href="{{ path('paciente_list', {'char':'V'}) }}">V</a><a href="{{ path('paciente_list', {'char':'W'}) }}">W</a><a href="{{ path('paciente_list', {'char':'X'}) }}">X</a>
-	        	<a href="{{ path('paciente_list', {'char':'Y'}) }}">Y</a><a href="{{ path('paciente_list', {'char':'Z'}) }}">Z</a></td>
+		        	<div class="btn-group" data-toggle="buttons-radio">
+					<a class="btn btn-info" href="{{ path('paciente_list', {'char':'A'}) }}">A</a>
+					<a class="btn btn-info" href="{{ path('paciente_list', {'char':'B'}) }}">B</a><a class="btn btn-info" href="{{ path('paciente_list', {'char':'C'}) }}">C</a>
+					<a class="btn btn-info" href="{{ path('paciente_list', {'char':'D'}) }}">D</a><a class="btn btn-info" href="{{ path('paciente_list', {'char':'E'}) }}">E</a><a href="{{ path('paciente_list', {'char':'F'}) }}">F</a>
+		        	<a class="btn btn-info" href="{{ path('paciente_list', {'char':'G'}) }}">G</a><a class="btn btn-info" href="{{ path('paciente_list', {'char':'H'}) }}">H</a><a href="{{ path('paciente_list', {'char':'I'}) }}">I</a>
+		        	<a class="btn btn-info" href="{{ path('paciente_list', {'char':'J'}) }}">J</a><a class="btn btn-info" href="{{ path('paciente_list', {'char':'K'}) }}">K</a><a href="{{ path('paciente_list', {'char':'L'}) }}">L</a>
+		        	<a class="btn btn-info" href="{{ path('paciente_list', {'char':'M'}) }}">M</a><a class="btn btn-info" href="{{ path('paciente_list', {'char':'N'}) }}">N</a><a href="{{ path('paciente_list', {'char':'O'}) }}">O</a>
+		        	<a class="btn btn-info" href="{{ path('paciente_list', {'char':'P'}) }}">P</a><a class="btn btn-info" href="{{ path('paciente_list', {'char':'Q'}) }}">Q</a><a href="{{ path('paciente_list', {'char':'R'}) }}">R</a>
+		        	<a class="btn btn-info" href="{{ path('paciente_list', {'char':'S'}) }}">S</a><a class="btn btn-info" href="{{ path('paciente_list', {'char':'T'}) }}">T</a><a href="{{ path('paciente_list', {'char':'U'}) }}">U</a>
+		        	<a class="btn btn-info" href="{{ path('paciente_list', {'char':'V'}) }}">V</a><a class="btn btn-info" href="{{ path('paciente_list', {'char':'W'}) }}">W</a><a href="{{ path('paciente_list', {'char':'X'}) }}">X</a>
+		        	<a class="btn btn-info" href="{{ path('paciente_list', {'char':'Y'}) }}">Y</a><a class="btn btn-info" href="{{ path('paciente_list', {'char':'Z'}) }}">Z</a></td>
+				</div>
+	        	
+	        	
+	        	
 	    	</tr>
 	        {% for entity in entities %}
 	            <tr>

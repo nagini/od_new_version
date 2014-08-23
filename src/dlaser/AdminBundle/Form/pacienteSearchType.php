@@ -10,12 +10,13 @@ class pacienteSearchType extends AbstractType
 	{
 		$builder
 		->add('nombre','text',array('label'=> 'Busqueda rapida:','mapped' => false,
-				'attr' => array('placeholder' => 'Ingrese el nombre',
+				'attr' => array( 'class' => 'span4 search-query', 'placeholder' => 'Ingrese el parametro de busqueda',
 						'autofocus'=>'autofocus')))
 				
 		->add('option', 'choice', array(
-				'label'=> 'Opcion de busqueda:',
+				'label'=> 'Opcion:',
 				'mapped' => false,
+				'attr' => array( 'class' => 'span2'),
 				 'choices' => array(
 				 		'cedula'=> 'Cedula',
 				 		'nombre'=> 'Nombre',

@@ -8,7 +8,7 @@
 
 {% block titulo %}Informe de Citas, estado de {{misEstados[estado]}}{% endblock %}
 
-{% set misEstados = {'A':'Asignado','CA':'Cancelado','RE':'Reprogramado','CO':'Confirmado','CU':'Cumplido','IN':'Incumplido','PN':'Programado Nueva Cita','DE':'Desertor','NO':'No iniciada','FI':'Finalizado','PD':'Cita programada'} %}
+{% set misEstados = {'A':'Pendiente','CA':'Cancelado','RE':'Reprogramado','CO':'Incumplida la cita','CU':'Cumplido sin cita','IN':'Incumplido','PN':'Programar Nueva Cita','DE':'Desertor','NO':'No iniciada','FI':'Finalizado', 'PD': 'Cumplida con cita'} %}
 
 
 {% block cuerpo %}
@@ -19,7 +19,7 @@
 	    		<span class="label label-success">{{ dateStart | date('d/m/Y') }} </span> hasta 
 	    		<span class="label label-success">{{ dateEnd | date('d/m/Y') }} </span>
 	    </h5>
-	        <table>
+	        <table class="table table-hover">
 	            <thead>
 	                <tr>
 	                	<th>##</th>

@@ -45,9 +45,39 @@ agenda_list_appointments:
     defaults: { _controller: AgendaBundle:Agenda:appointments }
     
 agenda_check_appointment:
-    pattern:  /list/check/{cupo}/appointments
+    pattern:  /list/check/cupo/appointments
     defaults: { _controller: AgendaBundle:Agenda:checkAppointment }
+    requirements:
+        _method:  POST
     
+#************** Medico *************#
+
+medico_list:
+    pattern:  /medicos/list/
+    defaults: { _controller: AgendaBundle:AgendaMedica:list }
+    
+medico_agenda_sedes:
+    pattern:  /medicos/{medico}/sedes
+    defaults: { _controller: AgendaBundle:AgendaMedica:agendaSedes }
+    
+medico_agenda_cupos:
+    pattern:  /medicos/{medico}/sedes/{sede}/citas
+    defaults: { _controller: AgendaBundle:AgendaMedica:agendaCitas }
+    
+medico_save_new_cupo:
+    pattern:  /medicos/sedes/citas/save
+    defaults: { _controller: AgendaBundle:AgendaMedica:saveNewCita }
+    requirements:
+        _method:  POST
+        
+medico_print_agenda:
+    pattern:  /medicos/print/{agenda}/agenda
+    defaults: { _controller: AgendaBundle:AgendaMedica:printMedicoAgenda }
+    options: 
+        expose: true
+
+        
+        
 #************** Restricción ***************#
     
 restriccion_list:

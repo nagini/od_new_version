@@ -1,0 +1,60 @@
+{% extends "::simple.html.twig" %}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+	<div>
+	
+		<table border="1">
+			<thead>
+				<tr>					
+					<th colspan="2"><b>PROFESIONAL</b></th>
+					<th colspan="1"><b>AGENDA</b></th>
+					<th colspan="1"><b>HORA INICIO</b></th>
+					<th colspan="1"><b>HORA FIN</b></th>				
+				</tr>
+			</thead>
+			<tbody>				
+				<tr>
+					<td>{{ profesional.nombre | capitalize }}</td>
+					<td>{{ profesional.apellido | capitalize }}</td>
+					<td>{{ agenda.nota| capitalize }}</td>
+					<td>{{ agenda.fechaInicio | date('d/m/Y H:i')}}</td>
+					<td>{{ agenda.fechaFin | date('d/m/Y H:i') }}</td>
+				</tr>				
+			</tbody>
+		</table>
+	</div>
+	
+	<br/>
+	
+	<div>	
+		<table border="1">
+			<thead>
+				<tr>					
+					<th><b>Hora</b></th>
+					<th><b>Fecha	</b></th>
+					<th><b>Identificacion	</b></th>		
+					<th ><b>Paciente</b></th>
+					<th><b>Movil		</b></th>
+					<th><b>Procedimiento</b></th>
+					<th><b>Estado</b></th>							
+				</tr>
+			</thead>
+			<tbody>
+				{% for cupo in cupos %}
+					<tr>
+						<td>{{ cupo.hora  | date('H:i')}}</td>
+		                <td>{{ cupo.hora | date('d/m/Y') }}</td>
+		                <td>{{ cupo.identificacion }}</td>
+		                <td>{{ cupo.priNombre }} {{ cupo.segNombre }} {{ cupo.priApellido }} {{ cupo.segApellido }}</td>
+		                <td>{{ cupo.movil }}</td>
+		                <td>{{ cupo.cargo }}</td>
+		                <td>Confirmado</td>		                
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+{% endblock %}

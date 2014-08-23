@@ -11,14 +11,14 @@
 
 {% block cuerpo %}
 
-    <table>
+    <table class="table table-hover">
         <tbody>
             <tr>
                 <th>Contacto</th>
                 <td>{{ contrato.contacto }}</td>
             </tr>
             <tr>
-                <th>Cargo</th>
+                <th>Procedimiento</th>
                 <td>{{ contrato.cargo }}</td>
             </tr>
             <tr>
@@ -57,9 +57,9 @@
     <a href="{{ path('cliente_show', {'id': contrato.cliente.id}) }}" class="btn">Regresar al listado</a>
     
     
-    <h2>Actividades contratadas</h2>
+    <h2>Procedimientos contratadas</h2>
     
-    <table>
+    <table class="table table-hover">
         <thead>
             <tr>
                 <th>No.</th>

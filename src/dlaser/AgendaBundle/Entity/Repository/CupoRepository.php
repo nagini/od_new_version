@@ -114,7 +114,9 @@ class CupoRepository extends EntityRepository
 	{
 		$em = $this->getEntityManager();
 		$dql= 		"SELECT 
-						c.id,	    				
+						c.id,	
+						c.cliente,						
+						p.id as paciente,    				
 						c.estado,						
 						c.verificacion,
 	    				p.priNombre,

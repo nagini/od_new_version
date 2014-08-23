@@ -19,7 +19,7 @@ class Builder extends ContainerAware
 			$menu->addChild('Parametrizar', array('uri' => '#'));	
 				$menu['Parametrizar']->addChild('Empresa', array('route' => 'empresa_list'));
 				$menu['Parametrizar']->addChild('Cliente', array('route' => 'cliente_list'));
-				$menu['Parametrizar']->addChild('Cargo', array('route' => 'cargo_list'));
+				$menu['Parametrizar']->addChild('Procedimientos', array('route' => 'cargo_list'));
 				$menu['Parametrizar']->addChild('Paciente', array('uri' => '#'));
 					$menu['Parametrizar']['Paciente']->addChild('Consultar', array('route' => 'paciente_list', 'routeParameters' => array('char' => 'A')));
 					$menu['Parametrizar']['Paciente']->addChild('Listar', array('route' => 'paciente_list', 'routeParameters' => array('char' => 'A')));
@@ -30,12 +30,13 @@ class Builder extends ContainerAware
 				$menu['Agendamiento']->addChild('Agenda', array('uri' => '#'));
 					$menu['Agendamiento']['Agenda']->addChild('Listado', array('route' => 'agenda_list'));
 					$menu['Agendamiento']['Agenda']->addChild('Nueva', array('route' => 'agenda_new'));
+					$menu['Agendamiento']['Agenda']->addChild('Agenda Medica', array('route' => 'medico_list'));
 				
                         $menu['Agendamiento']->addChild('Citas', array('uri' => '#'));
 					$menu['Agendamiento']['Citas']->addChild('Listado', array('route' => 'cupo_list'));
 					$menu['Agendamiento']['Citas']->addChild('Nueva', array('route' => 'cupo_new'));
 					$menu['Agendamiento']['Citas']->addChild('Consultar', array('route' => 'cupo_search'));
-					$menu['Agendamiento']['Citas']->addChild('A Programar', array('route' => 'agenda_list_new_citas'));
+					$menu['Agendamiento']['Citas']->addChild('Cumplidas con cita', array('route' => 'agenda_list_new_citas'));
 			
                         $menu->addChild('Informes', array('uri' => '#'));
                                         $menu['Informes']->addChild('Honorarios', array('route' => 'factura_reporte_medico'));
@@ -48,19 +49,19 @@ class Builder extends ContainerAware
 			
 		}else{
 			
-			$menu->addChild('Agendamiento', array('uri' => '#'));
-				//$menu['Agendamiento']->addChild('Agenda', array('route' => 'agenda_aux_list'));
+			$menu->addChild('Agendamiento', array('uri' => '#'));				
 			
 				$menu['Agendamiento']->addChild('Agenda', array('uri' => '#'));
                                         $menu['Agendamiento']->addChild('Agenda', array('uri' => '#'));
 					$menu['Agendamiento']['Agenda']->addChild('Listado', array('route' => 'agenda_list'));
 					$menu['Agendamiento']['Agenda']->addChild('Nueva', array('route' => 'agenda_new'));
+					$menu['Agendamiento']['Agenda']->addChild('Agenda Medica', array('route' => 'medico_list'));
                                         
                                         $menu['Agendamiento']->addChild('Citas', array('uri' => '#'));
 					$menu['Agendamiento']['Citas']->addChild('Listado', array('route' => 'cupo_list'));
 					$menu['Agendamiento']['Citas']->addChild('Nueva', array('route' => 'cupo_new'));
 					$menu['Agendamiento']['Citas']->addChild('Consultar', array('route' => 'cupo_search'));
-					$menu['Agendamiento']['Citas']->addChild('A Programar', array('route' => 'agenda_list_new_citas'));
+					$menu['Agendamiento']['Citas']->addChild('Cumplidas con cita', array('route' => 'agenda_list_new_citas'));
 		}
 		
 		$actualUser = $securityContext->getToken()->getUser();

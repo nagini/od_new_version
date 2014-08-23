@@ -776,17 +776,15 @@ class FacturaController extends Controller
 			    	p.id as paciente,
 			    	p.tipoId,
 			    	p.identificacion,
-			    	f.fecha,
-			    	f.autorizacion,
+			    	f.fecha,			    	
 			    	p.priNombre,
 			    	p.segNombre,
 			    	p.priApellido,
 			    	p.segApellido,
 			    	c.nombre as cargo,
-			    	f.valor,
-			    	f.copago,
-			    	f.descuento,
-			    	f.estado
+			    	f.valor,		    	
+    				cp.verificacion as observacion,
+    				cp.estado as cupoEstado
     			FROM
     				ParametrizarBundle:Factura f
     			JOIN

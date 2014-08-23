@@ -10,7 +10,7 @@
 
 
 {% block cuerpo %}
-    <table class="records_list">
+    <table <table class="table table-hover">
         <thead>
             <tr>
                 <th>Id</th>
@@ -33,11 +33,11 @@
                 <td>{{ entity.cc }}</td>
                 <td>
                 	{% if entity.perfil == 'ROLE_ADMIN'  %}
-                		<b>Administrador</b>
+                		<span class="label label-important">Administrador</span>
                 	{% elseif entity.perfil == 'ROLE_MEDICO' %}
-                		Médico
+                		<span class="label label-info">Médico</span>
                 	{% elseif entity.perfil == 'ROLE_AUX' %}
-                		Auxiliar
+                		<span class="label label-warning">Auxiliar</span>
                 	{% endif %}
                 </td>
                 <td>{{ entity.telefono }}</td>

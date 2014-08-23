@@ -4,12 +4,14 @@ namespace dlaser\AgendaBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
+
 use dlaser\AgendaBundle\Entity\Restriccion;
 use dlaser\AgendaBundle\Entity\Agenda;
 use dlaser\AgendaBundle\Entity\Cupo;
 use dlaser\AgendaBundle\Form\RestriccionType;
 use dlaser\AgendaBundle\Form\AgendaType;
 use dlaser\AgendaBundle\Form\AgendaMedicaType;
+use dlaser\AgendaBundle\Form\AsignarCitaType;
 
 
 class AgendaController extends Controller
@@ -221,6 +223,7 @@ class AgendaController extends Controller
     
             $query = $em->createQuery(' SELECT a
                     FROM AgendaBundle:Agenda a
+            		LEFT JOIN a.usuario u
                     WHERE a.fechaInicio > :fi
                     AND a.sede = :sede
                     ORDER BY a.fechaInicio ASC');
@@ -230,14 +233,24 @@ class AgendaController extends Controller
     
             $agendas = $query->getArrayResult();
     
-            if($agendas){
-    
+            if($agendas)
+            {
                 $response=array("responseCode"=>200);
+                
     
                 foreach($agendas as $key => $value)
                 {
                     $response['agenda'][$key] = $value;
-                }
+                }                
+                
+                $int = 0;
+                foreach($response['agenda'] as $mi_agenda)
+                {
+                	$response['agenda'][$int]['fechaInicio'] = $mi_agenda['fechaInicio']->format('d/m/Y H:i');
+                	$response['agenda'][$int]['fechaFin'] = $mi_agenda['fechaFin']->format('d/m/Y H:i');                	
+                	$int ++;
+                }                
+                
             }else{
                 $response=array("responseCode"=>400, "msg"=>"No hay agendas disponibles para la sede seleccionada");
             }
@@ -294,39 +307,7 @@ class AgendaController extends Controller
             $user = $this->get('security.context')->getToken()->getUser();
             $usuario = $user->getId();
     
-            $query = $em->createQuery(" SELECT f.id,
-                    c.hora,
-                    f.fecha,
-            		f.id,
-                    p.identificacion,
-                    p.priNombre,
-                    p.segNombre,
-                    p.priApellido,
-                    p.segApellido,
-                    cli.nombre as cliente,
-                    car.nombre as cargo,
-                    car.cups,                    
-            		f.estado
-                    FROM ParametrizarBundle:Factura f
-                    LEFT JOIN f.cupo c
-                    LEFT JOIN f.cliente cli
-                    LEFT JOIN f.paciente p
-                    LEFT JOIN f.cargo car
-                    LEFT JOIN c.agenda a
-                    WHERE f.sede = :sede
-                    AND f.estado != :estado
-            		AND f.estado != 'X'
-            		AND car.cups NOT IN (933600)
-                    AND a.usuario = :usuario
-                    ORDER BY c.hora ASC");
-
-            $fecha = new \DateTime('now');
-
-            $query->setParameter('sede', $sede);
-            $query->setParameter('estado', 'I');
-            $query->setParameter('usuario', $usuario);
-
-            $agendas = $query->getArrayResult();
+            $agendas = $em->getRepository('AgendaBundle:Agenda')->findAgendaDelMedico($usuario,$sede);         
 
             if($agendas){
 
@@ -424,6 +405,7 @@ class AgendaController extends Controller
     	return $this->render('AgendaBundle:Agenda:list_appointments.html.twig', array(
     			'sedes' => $sedes,
     			'cupos'	=> '',
+    			'formulario'	=> '',
     	));   	
     } 
     
@@ -442,32 +424,49 @@ class AgendaController extends Controller
     		return $this->render('AgendaBundle:Agenda:list_appointments.html.twig', array(
     				'sedes' => $sedes,
     				'cupos'	=> '',
+    				'formulario'	=> '',
     		));
     	} 
     	
     	$this->get('session')->getFlashBag()->add('ok', 'Listado de las citas a programar solicitadas por el medico.');
     	
+    	$cupo = new Cupo();
+    	$user = $this->get('security.context')->getToken()->getUser();  	
+    	$form = $this->createForm(new AsignarCitaType(array('user' => $user->getId())),  $cupo);
+    	
     	return $this->render('AgendaBundle:Agenda:list_appointments.html.twig', array(
     			'sedes' => $sedes,
     			'cupos'	=> $cupos,
+    			'formulario' => $form->createView()
     	));
     }
     
-    public function checkAppointmentAction($cupo)
+    public function checkAppointmentAction()
     {
+    	$request = $this->get('request');
+    	$cupo = $request->request->get('cupo');
+    	
     	$em = $this->getDoctrine()->getManager();
     	$cupo = $em->getRepository('AgendaBundle:Cupo')->find($cupo);
     	
     	if (!$cupo) {
-    		$this->get('session')->getFlashBag()->add('error', 'La cita solicitada no existe.');    	
-    		return $this->redirect($this->generateUrl('agenda_list_new_citas'));
+    		    	
+    		$response = array("responseCode"=>400, "msg"=>"La cita solicitada no existe.");
+			
+			$return=json_encode($response);
+			return new Response($return,200,array('Content-Type'=>'application/json'));
     	}
     	
     	$cupo->setEstado('PD');
     	$em->persist($cupo);
     	$em->flush();
     	
-    	return $this->redirect($this->generateUrl('cupo_new')); 	
+    	$response=array("responseCode"=>200, "msg"=>"La Actividad se registro éxitosamente.");
+		
+		$return = json_encode($response);
+		return new Response($return,200,array('Content-Type'=>'application/json'));	
     	
     }
+    
+    
 }

@@ -34,8 +34,8 @@ class CupoType extends AbstractType
         ))
         ->add('paciente', 'integer', array('label' => 'Cedula Paciente:','required' => true, 'attr' => array('placeholder' => 'Ingrese la identificacion del paciente')))
         ->add('cliente', 'choice', array('label' => 'Cliente:', 'choices' => array('' => '--')))
-        ->add('cargo', 'choice', array('label' => 'Cargo:','choices' => array('' => '--')))
-        ->add('agenda', 'choice', array('label' => 'Agenda asignar:','choices' => array('' => '--')))
+        ->add('cargo', 'choice', array('label' => 'Procedimiento:','choices' => array('' => '--')))
+        ->add('agenda', 'choice', array('label' => 'Asignar agenda:','choices' => array('' => '--')))
         ->add('hora', 'choice', array('label' => 'Hora agenda:','choices' => array('' => '--')))        
         ;
     }

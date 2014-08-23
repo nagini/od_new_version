@@ -19,16 +19,17 @@
         </select>
     </div><br/>
     
-    <div id="agendas" >
-        <table id="agenda_reservas">
+    <div id="agendas">
+        <table id="agenda_reservas" class="table table-hover">
             <thead>
                 <tr>                    
                     <th>Inicia</th>
                     <th>Termina</th>
                     <th>Tiempo</th>
                     <th>Estado</th>
-                    <th>Nota</th>
+                    <th>Agenda</th>
                     <th>Opciones</th>
+                    <th>Imprimir</th>
                 </tr>
             </thead>
             <tbody>
@@ -38,7 +39,7 @@
     </div>
     
     <div id="cupos">
-        <table id="reservas">
+        <table id="reservas" class="table table-hover">
             <thead>
                 <tr>
                     <th>Hora</th>
@@ -46,7 +47,7 @@
                     <th>Nota</th>                    
                     <th>Paciente</th>
                     <th>Movil</th>
-                    <th>Actividad</th>
+                    <th>Procedimiento</th>
                     <th>Opciones</th>
                     <th>Accion</th>
                 </tr>
@@ -133,14 +134,18 @@
                             $.each(data.agenda, function(i, val) {
 
                             	href='<a class="btn"" href="#" onClick="listarCupos('+val.id+');">Ver cupos</a>';
+
+                            	var url_print = Routing.generate('medico_print_agenda', { 'agenda': val.id }); 
+                            	print='<a class="btn" target="_blank" href="'+url_print+'" ><i class="icon-print"></i></a>';
                                 
                                 $("#agenda_reservas tbody").append("<tr>");                                  
-                                  $("#agenda_reservas tbody").append("<td>"+val.fechaInicio.date+"</td>");
-                                  $("#agenda_reservas tbody").append("<td>"+val.fechaFin.date+"</td>");
-                                  $("#agenda_reservas tbody").append("<td>"+val.intervalo+"</td>");
+                                  $("#agenda_reservas tbody").append("<td>"+val.fechaInicio+"</td>");
+                                  $("#agenda_reservas tbody").append("<td>"+val.fechaFin+"</td>");
+                                  $("#agenda_reservas tbody").append("<td>"+val.intervalo+" mts</td>");
                                   $("#agenda_reservas tbody").append("<td>"+val.estado+"</td>");
                                   $("#agenda_reservas tbody").append("<td>"+val.nota+"</td>");
-                                  $("#agenda_reservas tbody").append("<td>"+href+"</td>");                               
+                                  $("#agenda_reservas tbody").append("<td>"+href+"</td>");
+                                  $("#agenda_reservas tbody").append("<td>"+print+"</td>");                                
                                 $("#agenda_reservas tbody").append("</tr>");
                     		});         
                     		                    
@@ -208,15 +213,14 @@
                               $("#reservas tbody").append("<td><a href='"+ editar_pac +"' target='popup' title='Ver información del paciente' onClick='popup(this.href,750,600); return false;'>"+nombre.toUpperCase()+"</a></td>");
                               $("#reservas tbody").append("<td>"+val.movil+"</td>");
                               $("#reservas tbody").append("<td>"+val.nombre+"</td>");
-                              if(val.estado == 'Asignado' || val.estado == "Confirmado" )
+                              if(val.estado == '<span class="label label-info">Asignado</span>' || val.estado == '<span class="label label-warning">Confirmado</span>' )
                                   {
 	                            	  $("#reservas tbody").append("<td>"+
 	                                  		"<select class='span2' id='select"+id+"'>"+
 	                                  		  "<option value='' selected>Opciones</option>"+
 	                                            "<option value='CO'>Confirmado</option>"+
 	                                            "<option value='CU'>Cumplida</option>"+
-	                                            "<option value='CA'>Cancelado</option>"+
-	                                            "<option value='IN'>Incumplida</option>"+
+	                                            "<option value='CA'>Cancelado</option>"+	                                            
 	                                            "<option value='RE'>Reprogramar</option>"+
 	                                          "</select>"+
 	                                          "</td>");

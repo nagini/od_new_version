@@ -23,7 +23,7 @@ class CargoController extends Controller
                 
         $breadcrumbs = $this->get("white_october_breadcrumbs");
         $breadcrumbs->addItem("Inicio", $this->get("router")->generate("empresa_list"));
-        $breadcrumbs->addItem("Cargo", $this->get("router")->generate("cargo_list"));
+        $breadcrumbs->addItem("Procedimiento", $this->get("router")->generate("cargo_list"));
         $breadcrumbs->addItem("Listar");
 
         return $this->render('AdminBundle:Cargo:list.html.twig', array(
@@ -38,7 +38,7 @@ class CargoController extends Controller
         
         $breadcrumbs = $this->get("white_october_breadcrumbs");
         $breadcrumbs->addItem("Inicio", $this->get("router")->generate("empresa_list"));
-        $breadcrumbs->addItem("Cargo", $this->get("router")->generate("cargo_list"));        
+        $breadcrumbs->addItem("Procedimientos", $this->get("router")->generate("cargo_list"));        
         $breadcrumbs->addItem("Nuevo");
     
         return $this->render('AdminBundle:Cargo:new.html.twig', array(
@@ -82,7 +82,7 @@ class CargoController extends Controller
         
         $breadcrumbs = $this->get("white_october_breadcrumbs");
         $breadcrumbs->addItem("Inicio", $this->get("router")->generate("empresa_list"));
-        $breadcrumbs->addItem("Cargo", $this->get("router")->generate("cargo_list"));        
+        $breadcrumbs->addItem("Procedimientos", $this->get("router")->generate("cargo_list"));        
         $breadcrumbs->addItem("Detalle ".$cargo->getNombre());        
             
         return $this->render('AdminBundle:Cargo:show.html.twig', array(
@@ -101,7 +101,7 @@ class CargoController extends Controller
         
         $breadcrumbs = $this->get("white_october_breadcrumbs");
         $breadcrumbs->addItem("Inicio", $this->get("router")->generate("empresa_list"));
-        $breadcrumbs->addItem("Cargo", $this->get("router")->generate("cargo_list"));        
+        $breadcrumbs->addItem("Procedimientos", $this->get("router")->generate("cargo_list"));        
         $breadcrumbs->addItem("Detalle ",$this->get("router")->generate("cargo_show",array("id" => $cargo->getId())));
         $breadcrumbs->addItem("Modificar ".$cargo->getNombre());
     

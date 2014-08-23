@@ -6,12 +6,12 @@
 
 {% block rastro %}{{ wo_render_breadcrumbs() }}{% endblock %}
 
-{% block titulo %}Detalles del cargo{% endblock %}
+{% block titulo %}Detalles del procedimiento{% endblock %}
 
 
 {% block cuerpo %}
 
-    <table>
+    <table class="table table-hover">
         <tbody>
             <tr>
                 <th>Código</th>
@@ -34,6 +34,6 @@
     
     
     <a href="{{ path('cargo_edit', { 'id': entity.id }) }}" class="btn">Modificar cargo</a>
-    <a href="{{ path('cargo_list') }}" class="button middle">Regresar al listado</a>
+    <a href="{{ path('cargo_list') }}" class="btn">Regresar al listado</a>
 
 {% endblock %}

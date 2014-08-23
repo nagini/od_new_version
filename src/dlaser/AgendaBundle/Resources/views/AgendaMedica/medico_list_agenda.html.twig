@@ -6,53 +6,92 @@
 
 {% block rastro %}{{ wo_render_breadcrumbs() }}{% endblock %}
 
-{% block titulo %}Listado de citas a programar{% endblock %}
+{% block titulo %}Listado cupos Del Medico {{ medico.nombre | capitalize }} {{ medico.apellido | capitalize }} {% endblock %}
 
 
 {% block cuerpo %}
+
+	<h5>Seleccione la sede<h5>	
     
-    <h5>Seleccione la sede<h5>
-    {% if sedes %}
     	<div class="btn-group" data-toggle="buttons-radio">
     	{% for sede in sedes %}
-			  <a href="{{ path('agenda_list_appointments',{'sede':sede.id}) }}" class="btn btn-success"><i class=" icon-refresh"></i>{{ sede.nombre }}</a>	  
-		{% endfor %}
+			  <a href="{{ path('medico_agenda_cupos',{'medico':medico.id,'sede':sede.id}) }}" class="btn btn-success"><i class=" icon-refresh"></i>{{ sede.nombre }}</a>
+		{% else %}
+			 <label class="control-label" for="inputWarning">El medico no cuenta con sedes disponibles.</label>				  
+		{% endfor %}		
 		</div>
-    {% endif %}
-        <br/><br/><br/>
-    {% if cupos %}
-	    <div>
-	        <table class="table table-hover">
-	            <thead>
-	                <tr>
-	                    <th>Estado</th>	                    
-	                    <th>Observacion</th>
-	                    <th>Identificacion</th>	                                      
-	                    <th>Paciente</th>
-	                    <th>Movil</th>
-	                    <th>Actividad</th>
-	                    <th>Opciones</th>                    
-	                </tr>
-	            </thead>
-	            <tbody>
-	            	{% for cupo in cupos %}
-	            		<tr>
-	            			<td>Programar</td>	            			
-	            			<td>{{ cupo.verificacion }}</td>
-	            			<td>{{ cupo.identificacion }}</td>
-	            			<td>{{ cupo.priNombre }} {{ cupo.priApellido }}</td>
-	            			<td>{{ cupo.movil }}</td>
-	            			<td>{{ cupo.cargo }}</td>
-	            			<td><button type='button' class='btn'  onClick='showDialog({{ cupo.id }},{{ cupo.cliente }},{{ cupo.paciente }}); return false;'><i class="icon-ok"></i></button></td>	            				            			
-	            		</tr>
-	            	{% endfor %}
-	            	
-	            </tbody>
-	        </table>       
-	    </div>
-    {% endif %}
-    
-    {% if formulario %}
+		
+		
+
+	{% set misEstados = {'A':'Asignado','CA':'Cancelado','RE':'Reprogramado','CO':'Confirmado','CU':'Cumplido','IN':'Incumplido','PN':'Programado Nueva Cita','DE':'Desertor','NO':'No iniciada','FI':'Finalizado','PD':'Cita programada'} %}
+	
+		<table class="table table-hover">
+	        <thead>
+	            <tr>                
+	                <th>Hora</th>
+					<th>Registrado</th>
+					<th>Identificación</th>
+					<th>Paciente</th>
+					<th>Actividad</th>
+					<th>Estado</th>
+					<th>Opcion</th>
+					<th>Acción</th>
+	            </tr>
+	        </thead>
+	        <tbody >    
+	        	{% for cupo in facturas %}    
+	            <tr>                
+	                <td>{{ cupo.hora  | date('H:i')}}</td>
+	                <td>{{ cupo.fecha | date('d/m/Y') }}</td>
+	                <td>{{ cupo.identificacion }}</td>
+	                <td>{{ cupo.priNombre }} {{ cupo.segNombre }} {{ cupo.priApellido }} {{ cupo.segApellido }}</td>
+	                <td>{{ cupo.cargo }}</td>
+	                <td>{{ misEstados[cupo.estadoCita] }}</td>
+	                <td>
+						<select class='span2' id='select{{ cupo.id }}'>
+							<option value='' selected>Opciones</option>
+							<option value='PD'>Programar Nueva</option>
+							<option value='PN'>Programar Despues</option>
+							<option value='FI'>Finalizado</option>
+							<option value='DE'>Desertor</option>
+							<option value='NO'>No Inicia</option>
+						</select>
+					</td>
+	                <td><button type='button' class='btn' data-loading-text='Cargando...'  onClick='showDialog({{ cupo.id }},{{ cupo.cliente }},{{ cupo.paciente }}); return false;'>Aceptar</button></td>                
+	            </tr>
+	            <div id='boxModal'>
+	            	<tr>
+	            					<div id='myModal{{ cupo.id }}' class='modal hide fade' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
+	               						<div class='modal-header'>
+	               							 <button type='button' class='close' data-dismiss='modal' aria-hidden='true'>×</button>
+	               							 <h3 id='myModalLabel'>Observacion del paciente</h3>
+	               						</div>
+	               						<div class='modal-body'>paciente
+	               							{{ cupo.priNombre }} {{ cupo.segNombre }} {{ cupo.priApellido }} {{ cupo.segApellido }}
+	               							<textarea class='span6' placeholder='Ingrese el motivo'  id='CA_motivo{{ cupo.id }}'></textarea>
+	               							<p>               						
+	                   							<br/><strong>longitud de <em id="count{{ cupo.id }}" ></em> caracteres.</strong>
+	               							</p>
+	               						</div>
+	               						<div class='modal-footer'>	
+	               							<div id="div_carga1" style="display:none" class="progress progress-striped active">
+											  <div class="bar" style="width: 70%;"></div>
+											</div>			
+	               							<button class='btn btn-primary' onClick='selectAction({{ cupo.id }}); return false;'>Aceptar</button>
+	               							<button class='btn btn-danger' data-dismiss='modalpaciente' aria-hidden='true'>Cerrar</button>
+	               						</div>
+	               					</div>				
+	            	</tr>
+	            </div>	            
+	            {% else %}
+	            <tr>
+						<td><span class="label label-important">No se encuentran citas disponibles</span></td>
+					</tr>
+	            {% endfor %}				
+	        </tbody>
+	    </table>	
+	    
+	{% if formulario %}
         <div id='formModal' class='modal hide fade' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
               <div class='modal-header'>
               	 <button type='button' class='close' data-dismiss='modal' aria-hidden='true'>×</button>
@@ -64,7 +103,7 @@
 	    				    			
 							<input class="span1" style="display:none" id="Cupo_cliente" type="text" disabled>	    				    			
 							<input class="span1" style="display:none" id="Cupo_paciente" type="text" disabled>
-							<input class="span1" style="display:none" id="Cupo_CupoId" type="text" disabled>
+							<input class="span1" style="display:none" id="Cupo_factura" type="text" disabled>
 					      	<div class="control-group">
 									{{ form_label(formulario.sede) }}
 								<div class="controls">
@@ -108,7 +147,8 @@
               	<button class='btn btn-danger' data-dismiss='modal' aria-hidden='true'>Cerrar</button>              	
               </div>             
         </div>
-    {% endif %}	       
+    {% endif %}	
+	
 {% endblock %}
 
 {% block javascripts %}
@@ -119,29 +159,48 @@
 
 <script type="text/javascript">
 
-		$('#div_carga').hide().ajaxStart(function() {
+		$('#div_carga,#div_carga1').hide().ajaxStart(function() {
 					$(this).show();
 		}).ajaxStop(function() {
 				$(this).hide();
 		})
 		
-		function showDialog(cupo,cliente,paciente)
-		{			
-			$('#formModal').modal('toggle');
-			$('#Cupo_cliente').val(cliente);
-			$('#Cupo_paciente').val(paciente);
-			$('#Cupo_CupoId').val(cupo);
-			buscarCargo();					        
+		function showDialog(factura,cliente,paciente)
+		{
+			var estado = $("#select"+factura).val();			
+			
+			if(estado != '')
+			{
+				if(estado == 'PD')
+				{
+					$('#formModal').modal('toggle');
+					$('#Cupo_cliente').val(cliente);
+					$('#Cupo_paciente').val(paciente);
+					$('#Cupo_factura').val(factura);
+					buscarCargo();
+				}
+				else{				
+			     	$('#myModal'+factura).modal('toggle');
+				}				     		    	
+			     
+			}else{
+					$('#ajaxMsg').html("Seleccione una opcion valida");
+		            $('#ajaxMsg').css("color","red");
+		            alert("Seleccione una opcion valida.");
+				}	        
 		}
 		
 		
-		function selectAction(Cupo)
+		function selectAction(factura)
 		{	 
-			 var url = "{{ path('agenda_check_appointment') }}";
-			 var cupo = Cupo;			 			 
+			 var url = Routing.generate('realizar_actividad', { 'factura': factura });
+			 var estado = $("#select"+factura).val();
+			 var textarea = $("#CA_motivo"+factura).val();  
+			 $('#myModal'+factura).modal('hide');
 			 
 			 $.post(url,{
-				 cupo: cupo         
+			     estado: estado,
+			     textarea: textarea         
 			 },function(data){
 			     if(data.responseCode==200 ){
 			     	$('#ajaxMsg').html(data.msg);
@@ -168,7 +227,7 @@
 			 var cargo = $('#Cupo_cargo').val();
 			 var agenda = $('#Cupo_agenda').val();
 			 var hora = $('#Cupo_hora').val();
-			 var Cupo = $('#Cupo_CupoId').val();
+			 var factura = $('#Cupo_factura').val();
 
 			 if($.isNumeric(cliente) && $.isNumeric(sede) && $.isNumeric(paciente) && $.isNumeric(cargo) && $.isNumeric(agenda) && hora)
 			 {
@@ -183,7 +242,7 @@
 				     if(data.responseCode==200 ){
 				     	$('#ajaxMsg').html(data.msg);
 				         $('#ajaxMsg').css("color","green");
-				         selectAction(Cupo);				         			         		                     
+				         selectAction(factura);				         			         		                     
 				     }
 				     else if(data.responseCode==400){
 				     	$('#ajaxMsg').html(data.msg);
@@ -358,7 +417,11 @@ $(document).ready(function() {
 	        });        
 	    
 		
-});		  
+});
+
+
+
+		  
 </script>
 
 {% endblock %}

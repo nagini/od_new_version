@@ -22,7 +22,7 @@
 	<span class="label label-inverse">Hasta:</span>
 		<span class="label label-info">{{ f_f }}</span>
 
-    <table>
+    <table class="table table-hover">
         <thead>
             <tr>
                 <th>No.</th>
@@ -30,25 +30,27 @@
                 <th>Identificación</th>
                 <th>Fecha</th>                
                 <th>Paciente</th>
-                <th>Actividad</th>
+                <th>Procedimiento</th>
+                <th>Observacion</th>
                 <th>Valor</th>                
                 <th>Estado</th>                
             </tr>
         </thead>
-        <tbody>
+        <tbody>        
         
-        {% set mylist = {'I': 'INFORMADA', 'P': 'PENDIENTE', 'C': 'CANCELADA'} %}
+        {% set misEstados = {'A':'Pendiente','CA':'Cancelado','RE':'Reprogramado','CO':'Incumplida la cita','CU':'Cumplido sin cita','IN':'Incumplido','PN':'Programar Nueva Cita','DE':'Desertor','NO':'No iniciada','FI':'Finalizado', 'PD': 'Cumplida con cita'} %}
                         
         {% for entity in entities %}
             <tr>
-                <td>{{ entity.id }}</td>
+                <td>{{ loop.index}}</td>
                 <td>{{ entity.tipoId }}</td>
                 <td>{{ entity.identificacion }}</td>
                 <td>{{ entity.fecha|date('d-m-Y') }}</td>                
                 <td><a href="{{ path('paciente_edit', { 'id': entity.paciente }) }}" target="popup" title="Modificar admisión" onClick="popup(this.href,750,600); return false;">{{ entity.priNombre|capitalize }} {{ entity.segNombre|capitalize }} {{ entity.priApellido|capitalize }} {{ entity.segApellido|capitalize }}</a></td>
                 <td>{{ entity.cargo }}</td>
+                <td>{{ entity.observacion }}</td>
                 <td>{{ entity.valor }}</td>                
-                <td>{{ mylist[entity.estado]}}</td>	               
+                <td>{{ misEstados[entity.cupoEstado]}}</td>	               
             </tr>
          {% else %}
          	<tr>

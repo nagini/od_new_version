@@ -1,6 +1,6 @@
 <?php
 
-namespace knx\FacturacionBundle\Pdf;
+namespace dlaser\AdminBundle\Pdf;
 
 use Symfony\Component\HttpFoundation\Response;
 
@@ -15,16 +15,16 @@ class KnxPdf extends \TCPDF
 		$this->SetFont('helvetica', '', 7);
 		
 		$this->SetY($y);
-		$this->Cell(0, 0, 'HOSPITAL SAN AGUSTIN E.S.E', 0, false, 'C', 0, '', 0, false, 'M', 'M');
+		$this->Cell(0, 0, 'IPS SERVIESPECIALISTA ', 0, false, 'C', 0, '', 0, false, 'M', 'M');
 		
 		$this->SetY($y+4);
-		$this->Cell(0, 0, 'EMPRESA SOCIAL DEL ESTADO', 0, false, 'C', 0, '', 0, false, 'M', 'M');
+		$this->Cell(0, 0, 'EMPRESA PRIVADA DE ODONTOLOGIA', 0, false, 'C', 0, '', 0, false, 'M', 'M');
 		
 		$this->SetY($y+8);
-		$this->Cell(0, 0, 'PUERTO MERIZALDE - BUENAVENTURA - VALLE DEL CAUCA', 0, false, 'C', 0, '', 0, false, 'M', 'M');
+		$this->Cell(0, 0, 'TULUA  -  VALLE DEL CAUCA  -  COLOMBIA', 0, false, 'C', 0, '', 0, false, 'M', 'M');
 		
 		$this->SetY($y+12);
-		$this->Cell(0, 0, 'NIT. 800.155.000-8', 0, false, 'C', 0, '', 0, false, 'M', 'M');
+		$this->Cell(0, 0, 'NIT. 900.249.405', 0, false, 'C', 0, '', 0, false, 'M', 'M');
 		
 		
 	}

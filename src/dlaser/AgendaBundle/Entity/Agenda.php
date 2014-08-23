@@ -11,6 +11,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  *
  * @ORM\Table(name="agenda")
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="dlaser\AgendaBundle\Entity\Repository\AgendaRepository")
  */
 class Agenda
 {
