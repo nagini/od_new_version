@@ -32,8 +32,8 @@
                 <td>{{ agenda.intervalo }}</td>
                 <td>{{ agenda.estado }}</td>
                 <td>{{ agenda.nota }}</td>
-                <td>{{ agenda.usuario.nombre }}</td>
-                <td>{{ agenda.sede.nombre }}</td>
+                <td>{{ agenda.profesional}}</td>
+                <td>{{ agenda.sede }}</td>
             </tr>
          {% else %}
          	<tr>
@@ -42,6 +42,10 @@
         {% endfor %}
         </tbody>
     </table>
+        
+        {% if agendas %}
+            {{ knp_pagination_render(agendas) }}
+    	{% endif %}
     
     <a href="{{ path('agenda_new') }}" class="btn">Nuevo agenda</span></a>
 {% endblock %}

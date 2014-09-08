@@ -35,14 +35,15 @@
     <div>
     	<label for="tipo">Tipo:</label>
     	<select id="tipo" name="tipo">
-    		<option value="A">Pendientes</option>  <!-- A:asignada la cita pero el usuario no le realizo ninguna accion -->
-    	    <option value="CA">Carcelado</option>  <!-- CA:cancelado se llamo al paciente pero este no pudo asistir -->    	    
-    	    <option value="CO">Incumplida</option> <!-- CO:confirmaron la cita pero no asistieron se optienen informes como citas incumplidas -->
-    	    <option value="CU">Cumplido sin cita</option>   <!-- CU:cumplida el paciente asistio a la institucion pero este no quizo esperar su turno y se marcho -->    	    
-    	    <option value="PD">Cumplida con cita</option>   <!-- PD: pasiente atendido por el medio le asigna PN:programar nueva cita y el aux asigna cita programada PD -->
-    	    <option value="DE">Desertor</option>			<!-- DE:desertor paciente confirma,cumple y mientras el medico lo va atender este se marcha porq no tiene dinero -->
-    	    <option value="NO">No Inicio</option>			<!-- NO: el paciente No Inicia el tratamiento una ves es atendido por el medico -->
+            <option value="A">Pendientes</option>               <!-- A:asignada la cita pero el usuario no le realizo ninguna accion -->
+    	    <option value="CA">Cancelado</option>               <!-- CA:cancelado se llamo al paciente pero este no pudo asistir -->    	    
+    	    <option value="CO">Incumplida</option>              <!-- CO:confirmaron la cita pero no asistieron se optienen informes como citas incumplidas -->
+    	    <option value="PN">Cumplido sin cita</option>       <!-- PN: Al paciente no se le ha asignado cita en el sistema es decir el usuario lo dejo pendiente porq no habian agendas -->    	    
+    	    <option value="PD">Cumplida con cita</option>       <!-- PD: pasiente atendido por el medio le asigna PN:programar nueva cita y el aux asigna cita programada PD -->
+    	    <option value="DE">Desertor</option>		<!-- DE:desertor paciente confirma,cumple y mientras el medico lo va atender este se marcha porq no tiene dinero -->
+    	    <option value="NO">No Inicio</option>		<!-- NO: el paciente No Inicia el tratamiento una ves es atendido por el medico -->
     	    <option value="FI">Finalizado</option>    		<!-- FI: tratamiento finalizado -->    
+            <option value="CU">--X--</option> 
       	</select>
     </div>    
     

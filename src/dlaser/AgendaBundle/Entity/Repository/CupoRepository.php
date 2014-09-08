@@ -9,31 +9,30 @@ class CupoRepository extends EntityRepository
 	public function findInformeGeneral($con_sede,$desde,$hasta, $estado)
 	{
 		$em = $this->getEntityManager();
-		$dql= " SELECT		
-					
-					c.hora as horaCupo,
-					c.nota,											
-					c.verificacion,
-					a.fechaInicio as fechaAgenda,
-					a.nota as agenda,
-    				p.priNombre,
-    				p.segNombre,
-    				p.priApellido,
-    				p.segApellido,
-					p.identificacion,
-					p.movil,
-	    			car.nombre as cargo	
+		$dql= " SELECT			
+                            c.hora as horaCupo,
+                            c.nota,											
+                            c.verificacion,
+                            a.fechaInicio as fechaAgenda,
+                            a.nota as agenda,
+                            p.priNombre,
+                            p.segNombre,
+                            p.priApellido,
+                            p.segApellido,
+                            p.identificacion,
+                            p.movil,
+                            car.nombre as cargo	
     			FROM AgendaBundle:Cupo c
-    				LEFT JOIN c.paciente p
-    				LEFT JOIN c.cargo car
-					LEFT JOIN c.agenda a
-    				LEFT JOIN a.sede s
+                            LEFT JOIN c.paciente p
+                            LEFT JOIN c.cargo car
+                            LEFT JOIN c.agenda a
+                            LEFT JOIN a.sede s
     			WHERE
-			    	c.hora > :inicio AND
-			    	c.hora <= :fin AND
-					c.estado = :estado
-			    	".$con_sede."
-			    ORDER BY p.priNombre ASC";
+                            c.hora > :inicio AND
+                            c.hora <= :fin AND
+                            c.estado = :estado
+                            ".$con_sede."
+                        ORDER BY p.priNombre ASC";
 	
 		$query = $em->createQuery($dql);
 	

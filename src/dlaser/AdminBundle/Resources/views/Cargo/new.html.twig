@@ -6,14 +6,14 @@
 
 {% block rastro %}{{ wo_render_breadcrumbs() }}{% endblock %}
 
-{% block titulo %}Nuevo cargo{% endblock %}
+{% block titulo %}Nuevo procedimiento{% endblock %}
 
 
 {% block cuerpo %}
 
 <form action="{{ path('cargo_save') }}" method="post" {{ form_enctype(form) }}>
     <fieldset>
-    	<legend>Datos del cargo</legend>
+    	<legend>Datos del procedimiento</legend>
     	{{ form_widget(form) }}
     </fieldset>
     

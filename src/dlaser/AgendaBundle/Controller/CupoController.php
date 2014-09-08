@@ -34,14 +34,14 @@ class CupoController extends Controller
         $entity = new Cupo();
         
         $user = $this->get('security.context')->getToken()->getUser();        
-        $id=$user->getId();
+        $id = $user->getId();
         
         $breadcrumbs = $this->get("white_october_breadcrumbs");        
         $breadcrumbs->addItem("Inicio", $this->get("router")->generate("agenda_list"));       
         $breadcrumbs->addItem("Citas", $this->get("router")->generate("cupo_list"));
         $breadcrumbs->addItem("Nueva reserva");
         
-        $form   = $this->createForm(new CupoType(array('user' => $id)), $entity);       
+        $form   = $this->createForm(new CupoType(), $entity, $options = array('userId' => $id));       
         $afiliacion = new Afiliacion();
         
         $form_afil = $this->createForm(new AfiliacionType(), $afiliacion);
@@ -55,9 +55,12 @@ class CupoController extends Controller
 
     public function saveAction()
     {
+        $user = $this->get('security.context')->getToken()->getUser();        
+        $id = $user->getId();
+        
         $cupo = new Cupo();
                 
-        $form = $this->createForm(new CupoType(), $cupo);
+        $form = $this->createForm(new CupoType(), $cupo, array('userId' => $id));
         $request = $this->getRequest();
         $entity = $request->get($form->getName());
         
@@ -68,25 +71,35 @@ class CupoController extends Controller
         $cargo = $em->getRepository('ParametrizarBundle:Cargo')->find($entity['cargo']);        
         $user = $this->get('security.context')->getToken()->getUser();
         
-        if($agenda)
+                
+        if($agenda && $paciente)
         {
-        	$hora = new \DateTime($entity['hora']);
-        	
-        	$cupo->setHora($hora);
-        	$cupo->setRegistra($user->getId());
-        	$cupo->setPaciente($paciente);
-        	$cupo->setCargo($cargo);
-        	$cupo->setEstado('A');
-        	$cupo->setNota('');
-        	$cupo->setAgenda($agenda);        	
-        	$cupo->setCliente($entity['cliente']);
-        	
-        	$em->persist($cupo);
-        	$em->flush();
-        	
-        	$this->get('session')->getFlashBag()->add('ok', 'La reserva ha sido creada éxitosamente.');
-        	
-        	return $this->redirect($this->generateUrl('cupo_show', array('id' => $cupo->getId())));
+            // se valida la informacion de la cita que el paciente no cuente con una cita ya asignada en la misma agenda
+            $validarCita = $em->getRepository('AgendaBundle:Cupo')->findBy(array('agenda'=> $agenda->getId(), 'paciente'=>$paciente->getId()));
+            
+            if($validarCita)
+            {
+                $this->get('session')->getFlashBag()->add('error', 'El paciente cuenta con una cita asignada en esta agenda.');        		
+        	return $this->redirect($this->generateUrl('cupo_new'));
+            }
+            
+            $hora = new \DateTime($entity['hora']);
+
+            $cupo->setHora($hora);
+            $cupo->setRegistra($user->getId());
+            $cupo->setPaciente($paciente);
+            $cupo->setCargo($cargo);
+            $cupo->setEstado('A');
+            $cupo->setNota('');
+            $cupo->setAgenda($agenda);        	
+            $cupo->setCliente($entity['cliente']);
+
+            $em->persist($cupo);
+            $em->flush();
+
+            $this->get('session')->getFlashBag()->add('ok', 'La reserva ha sido creada éxitosamente.');
+
+            return $this->redirect($this->generateUrl('cupo_show', array('id' => $cupo->getId())));
         }else{
         	$this->get('session')->getFlashBag()->add('info', 'Hay informacion incompleta para la reserva del cupo.');        		
         	return $this->redirect($this->generateUrl('cupo_new'));
@@ -128,11 +141,11 @@ class CupoController extends Controller
         if (!$entity) {
             throw $this->createNotFoundException('La reserva solicitada no existe');
         }
-
-        $user = $this->get('security.context')->getToken()->getUser();
-        $id=$user->getId();
-
-        $editForm = $this->createForm(new CupoType(array('user' => $id)));
+        
+        $user = $this->get('security.context')->getToken()->getUser();        
+        $id = $user->getId();
+                
+        $editForm = $this->createForm(new CupoType(), NULL, array('userId' => $id));
         
         $breadcrumbs = $this->get("white_october_breadcrumbs");
         $breadcrumbs->addItem("Inicio", $this->get("router")->generate("agenda_list"));
@@ -150,57 +163,54 @@ class CupoController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-		$form = $this->createForm(new CupoType());
-		$request = $this->getRequest();
-		$entity = $request->get($form->getName());
+        $form = $this->createForm(new CupoType());
+        $request = $this->getRequest();
+        $entity = $request->get($form->getName());
 
-		if ($id != $entity['hora']) {
+        if ($id != $entity['hora']) 
+        {
 
-			$cupo = $em->getRepository('AgendaBundle:Cupo')->find($id);
+            $cupo = $em->getRepository('AgendaBundle:Cupo')->find($id);
 
-			if ($cupo) {
-				
-				$paciente = $em->getRepository('ParametrizarBundle:Paciente')->findOneBy(array('identificacion' => $entity['paciente']));
-				$cargo = $em->getRepository('ParametrizarBundle:Cargo')->find($entity['cargo']);
-				$agenda = $em->getRepository('AgendaBundle:Agenda')->find($entity['agenda']);
+            if ($cupo) 
+            {
+                $paciente = $em->getRepository('ParametrizarBundle:Paciente')->findOneBy(array('identificacion' => $entity['paciente']));
+                $cargo = $em->getRepository('ParametrizarBundle:Cargo')->find($entity['cargo']);
+                $agenda = $em->getRepository('AgendaBundle:Agenda')->find($entity['agenda']);
 
-				$user = $this->get('security.context')->getToken()->getUser();
-				
-				$hora = new \DateTime($entity['hora']);
-				$cupo->setRegistra($user->getId());
-				$cupo->setPaciente($paciente);
-				$cupo->setCargo($cargo);
-				$cupo->setAgenda($agenda);
-				$cupo->setEstado('A');				
-				$cupo->setCliente($entity['cliente']);
-				$cupo->setHora($hora);
+                $user = $this->get('security.context')->getToken()->getUser();
 
-				$em->persist($cupo);
-				$em->flush();
+                $hora = new \DateTime($entity['hora']);
+                $cupo->setRegistra($user->getId());
+                $cupo->setPaciente($paciente);
+                $cupo->setCargo($cargo);
+                $cupo->setAgenda($agenda);
+                $cupo->setEstado('A');				
+                $cupo->setCliente($entity['cliente']);
+                $cupo->setHora($hora);
 
-			}
-		} else {
+                $em->persist($cupo);
+                $em->flush();
+            }
+        } else {
 
-			$cupo = $em->getRepository('AgendaBundle:Cupo')->find($id);
-			$paciente = $em->getRepository('ParametrizarBundle:Paciente')->findOneBy(array('identificacion' => $entity['paciente']));
-			$cargo = $em->getRepository('ParametrizarBundle:Cargo')->find($entity['cargo']);
+                $cupo = $em->getRepository('AgendaBundle:Cupo')->find($id);
+                $paciente = $em->getRepository('ParametrizarBundle:Paciente')->findOneBy(array('identificacion' => $entity['paciente']));
+                $cargo = $em->getRepository('ParametrizarBundle:Cargo')->find($entity['cargo']);
 
-			$user = $this->get('security.context')->getToken()->getUser();
+                $user = $this->get('security.context')->getToken()->getUser();
 
-			$cupo->setRegistra($user->getId());
-			$cupo->setPaciente($paciente);
-			$cupo->setCargo($cargo);
-			$cupo->setEstado('A');			
-			$cupo->setCliente($entity['cliente']);
+                $cupo->setRegistra($user->getId());
+                $cupo->setPaciente($paciente);
+                $cupo->setCargo($cargo);
+                $cupo->setEstado('A');			
+                $cupo->setCliente($entity['cliente']);
 
-			$em->persist($cupo);
-			$em->flush();
-		}
-
-		$this->get('session')->getFlashBag()->add('ok', 'La información de la reserva ha sido modificada éxitosamente.');
-
-		return $this->redirect($this->generateUrl('cupo_show', array('id' => $cupo->getId())));
-        
+                $em->persist($cupo);
+                $em->flush();
+        }
+        $this->get('session')->getFlashBag()->add('ok', 'La información de la reserva ha sido modificada éxitosamente.');
+        return $this->redirect($this->generateUrl('cupo_show', array('id' => $cupo->getId())));
     }
     
     public function deleteAction()// pendiente por eliminar
@@ -331,15 +341,16 @@ class CupoController extends Controller
             $cupo = $query->getArrayResult();
             
             $estado = array(
-            		'A'=>'<span class="label label-info">Asignado</span>',
-            		'CA'=>'<span class="label label-important">Cancelado</span>',
-            		'RE'=>'Reprogramado',
-            		'CO'=>'<span class="label label-warning">Confirmado</span>',
-            		'CU'=>'<span class="label label-success">Cumplida</span>',
-            		'IN'=>'Incumplida',
-            		'PN'=>'Programar Nueva','DE'=>'Desertor',
-            		'NO'=>'NO Inicia', 'FI' => 'Finalizado',
-            		'PD'=>'Programado'
+            		'A'=> '<span class="label label-info">Asignado</span>',
+                        'CA'=>'<span class="label label-important">Cancelado</span>',
+                        'RE'=> 'Reprogramado',
+                        'CO'=> '<span class="label label-warning">Confirmado</span>',
+                        'CU'=> '<span class="label label-success">Cumplida</span>',
+                        'IN'=> 'Incumplida',
+                        'PN'=> '<span class="label label-inverse">Sin Cita x</span>',
+                        'DE'=> 'Desertor',
+                        'NO'=> 'NO Inicia', 'FI' => 'Finalizado',
+                        'PD'=> '<span class="label">Con Cita</span>'
             		);            
             
             
@@ -387,32 +398,33 @@ public function ajaxBuscarCupoAction() {
 		if (!$reserva) {
 			$response = array("responseCode" => 400, "msg" => "No existen reservas para los parametros de consulta ingrasados.");
 		} else {
-				$estado = array(
-						'A'=>'<span class="label label-info">Asignado</span>',
-	            		'CA'=>'<span class="label label-important">Cancelado</span>',
-	            		'RE'=>'Reprogramado',
-	            		'CO'=>'<span class="label label-warning">Confirmado</span>',
-	            		'CU'=>'<span class="label label-success">Cumplida</span>',
-	            		'IN'=>'Incumplida',
-	            		'PN'=>'Programar Nueva','DE'=>'Desertor',
-	            		'NO'=>'NO Inicia', 'FI' => 'Finalizado',
-	            		'PD'=>'Programado'
-						);				
-				
-				$response = array("responseCode" => 200);
-	
-				foreach ($reserva as $key => $value) {
-					$response['cupo'][$key] = $value;
-				}			
-				// se iteran los campos de los cupos para asignar el nombre completo correspondiente a su estado
-				// las fechas de igual forma se iteran para generar un formato y dar salida como string
-				$int = 0;
-				foreach($response['cupo'] as $mi_cupo)
-				{
-					$response['cupo'][$int]['estado'] = $estado[$mi_cupo['estado']];
-					$response['cupo'][$int]['hora'] = $mi_cupo['hora']->format('d/m/Y H:i');
-					$int ++;
-				}
+                        $estado = array(
+                                'A'=> '<span class="label label-info">Asignado</span>',
+                                'CA'=>'<span class="label label-important">Cancelado</span>',
+                                'RE'=> 'Reprogramado',
+                                'CO'=> '<span class="label label-warning">Confirmado</span>',
+                                'CU'=> '<span class="label label-success">Cumplida</span>',
+                                'IN'=> 'Incumplida',
+                                'PN'=> '<span class="label label-inverse">Sin Cita x</span>',
+                                'DE'=> 'Desertor',
+                                'NO'=> 'NO Inicia', 'FI' => 'Finalizado',
+                                'PD'=> '<span class="label">Con Cita</span>'
+                                );				
+
+                        $response = array("responseCode" => 200);
+
+                        foreach ($reserva as $key => $value) {
+                                $response['cupo'][$key] = $value;
+                        }			
+                        // se iteran los campos de los cupos para asignar el nombre completo correspondiente a su estado
+                        // las fechas de igual forma se iteran para generar un formato y dar salida como string
+                        $int = 0;
+                        foreach($response['cupo'] as $mi_cupo)
+                        {
+                                $response['cupo'][$int]['estado'] = $estado[$mi_cupo['estado']];
+                                $response['cupo'][$int]['hora'] = $mi_cupo['hora']->format('d/m/Y H:i');
+                                $int ++;
+                        }
 		}
 
 		$return = json_encode($response);

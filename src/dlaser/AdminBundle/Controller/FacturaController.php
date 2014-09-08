@@ -1,8 +1,6 @@
 <?php
 
-namespace dlaser\AdminBundle\Controller;;
-
-use Io\TcpdfBundle\Helper\Tcpdf;
+namespace dlaser\AdminBundle\Controller;
 
 use dlaser\ParametrizarBundle\Entity\Facturacion;
 
@@ -14,8 +12,8 @@ use dlaser\ParametrizarBundle\Entity\Factura;
 use dlaser\AdminBundle\Form\FacturaType;
 use dlaser\AdminBundle\Form\FacturacionType;
 use dlaser\AdminBundle\Form\AdmisionType;
-use dlaser\HcBundle\Entity\Hc;
-use dlaser\HcBundle\Entity\HcMedicamento;
+
+
 
 class FacturaController extends Controller
 {
@@ -49,13 +47,7 @@ class FacturaController extends Controller
     public function saveAction($cupo)
     {
         $entity  = new Factura();
-        
-        /*$request = $this->getRequest();
-        $form    = $this->createForm(new FacturaType(), $entity);
-        $form->bind($request);*/
-        
-       // if ($form->isValid()) {
-            
+                   
             $em = $this->getDoctrine()->getManager();
             $reserva = $em->getRepository('AgendaBundle:Cupo')->find($cupo);
             
@@ -92,23 +84,11 @@ class FacturaController extends Controller
             $em->flush();
             
             $this->get('session')->getFlashBag()->add('ok', 'La admisión ha sido registrada éxitosamente.');            
-
-                  
-        /*
-          }
-        
-        return $this->render('AdminBundle:Factura:new.html.twig', array(
-                'cupo' => $reserva,
-                'actividad' => $valor,
-                'form'   => $form->createView()
-        ));*/
-        
-        //return $this->render('AdminBundle:Factura:search.html.twig');
         
        return $this->render('AgendaBundle:Cupo:search.html.twig');
     }   
         
-    public function searchAction()
+  /*  public function searchAction()
     {
     	$breadcrumbs = $this->get("white_october_breadcrumbs");
     	$breadcrumbs->addItem("Inicio", $this->get("router")->generate("agenda_list"));
@@ -126,9 +106,9 @@ class FacturaController extends Controller
     	$breadcrumbs->addItem("Buscar admisión");    	
     	
     	return $this->render('AdminBundle:Factura:buscar_factura.html.twig');
-    }
+    }*/
     
-    public function listAdmisionAction()
+    /*public function listAdmisionAction()
     {
     	$request = $this->get('request');
 
@@ -185,9 +165,9 @@ class FacturaController extends Controller
     		$this->get('session')->getFlashBag()->add('info', 'El parametro ingresado es incorrecto.');
     		return $this->redirect($this->generateUrl('factura_admision_search'));
     	}
-    }
+    }*/
 
-    public function editAction($id)
+   /* public function editAction($id)
     {
     	$em = $this->getDoctrine()->getManager();    
     	$entity = $em->getRepository('ParametrizarBundle:Factura')->find($id);
@@ -214,9 +194,9 @@ class FacturaController extends Controller
     			'entity'      => $entity,
     			'edit_form'   => $editForm->createView(),
     	));
-    }
+    }*/
     
-    public function updateAction($id)
+  /*  public function updateAction($id)
         {
     	$em = $this->getDoctrine()->getManager();    
     	$entity = $em->getRepository('ParametrizarBundle:Factura')->find($id);
@@ -325,7 +305,7 @@ class FacturaController extends Controller
     	
 
     	return $this->get('io_tcpdf')->quick_pdf($html, 'factura.pdf', 'I');
-	}
+	}*/
     
     public function updateEstadoAction($id, $estado)
     {
@@ -435,7 +415,7 @@ class FacturaController extends Controller
         
     } 
 
-    public function arqueoAction()
+   /* public function arqueoAction()
     {
     	$em = $this->getDoctrine()->getManager();    	
     	$usuario = $this->get('security.context')->getToken()->getUser();
@@ -457,9 +437,9 @@ class FacturaController extends Controller
     			'usuario' => $sedes
     	));
     	
-    }
+    }*/
     
-    public function imprimirArqueoAction($sede)
+   /* public function imprimirArqueoAction($sede)
     {
     	$em = $this->getDoctrine()->getManager();
     	
@@ -555,7 +535,7 @@ class FacturaController extends Controller
     			'sedes' => $sedes,
     			'clientes' => $clientes
     	));
-    }
+    }*/
     
     /**
      * @uses Muestra el listado generado a partir de los parametros de consultas definidos.
@@ -772,44 +752,45 @@ class FacturaController extends Controller
     	}
     	 
     	$dql= " SELECT
-			    	f.id,
-			    	p.id as paciente,
-			    	p.tipoId,
-			    	p.identificacion,
-			    	f.fecha,			    	
-			    	p.priNombre,
-			    	p.segNombre,
-			    	p.priApellido,
-			    	p.segApellido,
-			    	c.nombre as cargo,
-			    	f.valor,		    	
-    				cp.verificacion as observacion,
-    				cp.estado as cupoEstado
-    			FROM
-    				ParametrizarBundle:Factura f
-    			JOIN
-    				f.cargo c
-    			JOIN
-    				f.paciente p
-    			JOIN
-    				f.cupo cp
-    			JOIN
-    				cp.agenda a
-    			WHERE
-			    	f.fecha > :inicio AND
-			    	f.fecha <= :fin AND
-			    	a.usuario = :usuario ".
-    			    	$con_sede."
-		    	ORDER BY
-		    		f.fecha ASC";
+                    f.id,
+                    p.id as paciente,
+                    p.tipoId,
+                    p.identificacion,
+                    f.fecha,			    	
+                    p.priNombre,
+                    p.segNombre,
+                    p.priApellido,
+                    p.segApellido,
+                    c.nombre as cargo,
+                    f.valor,		    	
+                    cp.verificacion as observacion,
+                    cp.estado as cupoEstado
+                FROM
+                    ParametrizarBundle:Factura f
+                JOIN
+                    f.cargo c
+                JOIN
+                    f.paciente p
+                JOIN
+                    f.cupo cp
+                JOIN
+                    cp.agenda a
+                WHERE
+                    f.fecha > :inicio AND
+                    f.fecha <= :fin AND
+                    f.estado = :estado AND
+                    a.usuario = :usuario ".
+                    $con_sede."
+                ORDER BY
+                    f.fecha ASC";
     
-    	$query = $em->createQuery($dql);
-    	 
+    	$query = $em->createQuery($dql);           	 
     	$query->setParameter('inicio', $desde[2]."/".$desde[1]."/".$desde[0].' 00:00:00');
     	$query->setParameter('fin', $hasta[2]."/".$hasta[1]."/".$hasta[0].' 23:59:00');
     	$query->setParameter('usuario', $usuario);
-    	 
-    	$entity = $query->getResult();
+        $query->setParameter('estado', 'I');
+        
+        $entity = $query->getResult();    	
     	
     	$breadcrumbs = $this->get("white_october_breadcrumbs");
     	$breadcrumbs->addItem("Inicio", $this->get("router")->generate("empresa_list"));    	
@@ -834,7 +815,7 @@ class FacturaController extends Controller
     	$usuario = $request->request->get('usuario');
     	$f_inicio = $request->request->get('f_inicio');
     	$f_fin = $request->request->get('f_fin');
-    	
+           	
     	$em = $this->getDoctrine()->getManager();
     	 
     	if(is_numeric(trim($usuario))){
@@ -862,38 +843,38 @@ class FacturaController extends Controller
     	}
     	 
     	$dql= " SELECT
-			    	f.id,
-			    	p.id as paciente,
-			    	p.tipoId,
-			    	p.identificacion,
-			    	f.fecha,
-			    	f.autorizacion,
-    				cli.nombre,
-			    	p.priNombre,
-			    	p.segNombre,
-			    	p.priApellido,
-			    	p.segApellido,
-			    	c.cups
-    			FROM
-    				ParametrizarBundle:Factura f
-    			JOIN
-    				f.cargo c
-    			JOIN
-    				f.paciente p
-    			JOIN
-    				f.cliente cli
-    			JOIN
-    				f.cupo cp
-    			JOIN
-    				cp.agenda a
-    			WHERE
-			    	f.fecha > :inicio AND
-			    	f.fecha <= :fin AND
-    				f.estado = :estado AND
-			    	a.usuario = :usuario ".
-    			    	$con_sede."
-		    	ORDER BY
-		    		f.fecha ASC";
+                    f.id,
+                    p.id as paciente,
+                    p.tipoId,
+                    p.identificacion,
+                    f.fecha,
+                    f.autorizacion,
+                    cli.nombre,
+                    p.priNombre,
+                    p.segNombre,
+                    p.priApellido,
+                    p.segApellido,
+                    c.nombre AS cups
+                FROM
+                    ParametrizarBundle:Factura f
+                JOIN
+                    f.cargo c
+                JOIN
+                    f.paciente p
+                JOIN
+                    f.cliente cli
+                JOIN
+                    f.cupo cp
+                JOIN
+                    cp.agenda a
+                WHERE
+                    f.fecha > :inicio AND
+                    f.fecha <= :fin AND
+                    f.estado = :estado AND
+                    a.usuario = :usuario ".
+                    $con_sede."
+                ORDER BY
+                    f.fecha ASC";
     	  
     	$query = $em->createQuery($dql);
     	 
@@ -905,27 +886,27 @@ class FacturaController extends Controller
     	$entity = $query->getResult();
     	
     	$dql= " SELECT
-			    	c.cups,
-    				count(c.id) as cantidad
-    			FROM
-    				ParametrizarBundle:Factura f
-    			JOIN
-    				f.cargo c
-    			JOIN
-    				f.cupo cp
-    			JOIN
-    				cp.agenda a
-    			WHERE
-			    	f.fecha > :inicio AND
-			    	f.fecha <= :fin AND
-    				f.estado = :estado AND
-			    	a.usuario = :usuario ".
-    				    	$con_sede."
-    			GROUP BY
-    				c.cups
-		    	ORDER BY
-		    		f.fecha ASC
-    			";
+                    c.id,
+                    count(c.id) as cantidad,
+                    c.nombre
+                FROM
+                    ParametrizarBundle:Factura f
+                JOIN
+                    f.cargo c
+                JOIN
+                    f.cupo cp
+                JOIN
+                    cp.agenda a
+                WHERE
+                    f.fecha > :inicio AND
+                    f.fecha <= :fin AND
+                    f.estado = :estado AND
+                    a.usuario = :usuario ".
+                            $con_sede."
+                GROUP BY
+                        c.id
+                ORDER BY
+                        c.nombre ASC";
     	
     	$query = $em->createQuery($dql);
     	 
@@ -936,7 +917,7 @@ class FacturaController extends Controller
     	 
     	$cantidad = $query->getResult();   	
     
-    	$html = $this->renderView('AdminBundle:Reporte:honorarios.pdf.twig', array(
+    	$html = $this->renderView('AdminBundle:Reporte:honorarios.html.twig', array(
     			'entities' => $entity,
     			'cantidad' => $cantidad,
     			'empresa' => $empresa,
@@ -945,21 +926,15 @@ class FacturaController extends Controller
     			'f_f' => $f_fin
     	));
     
-    	$this->get('io_tcpdf')->dir = $obj_sede->getDireccion();
-    	$this->get('io_tcpdf')->ciudad = $obj_sede->getCiudad();
-    	$this->get('io_tcpdf')->tel = $obj_sede->getTelefono();
-    	$this->get('io_tcpdf')->mov = $obj_sede->getMovil();
-    	$this->get('io_tcpdf')->mail = $obj_sede->getEmail();
-    	$this->get('io_tcpdf')->sede = $obj_sede->getnombre();
-    	$this->get('io_tcpdf')->empresa = $obj_sede->getEmpresa()->getNombre();
-    
-    	$this->get('io_tcpdf')->SetMargins(3, 10, 3);
-    
-    	return $this->get('io_tcpdf')->quick_pdf($html, 'Honorarios_Medicos.pdf', 'I');
+    	$pdf = $this->instanciarImpreso("Informe");
+        $pdf->writeHTMLCell($w = 0, $h = 0, $x = '', $y = '', $html, $border = 0, $ln = 1, $fill = 0, $reseth = true, $align = '', $autopadding = true);
+
+        $response = new Response($pdf->Output('Honorarios_Medicos.pdf', 'I'));
+        $response->headers->set('Content-Type', 'application/pdf');
     }
     
     
-    public function imprimirCtaCobroAction()
+   /* public function imprimirCtaCobroAction()
     {
     	$request = $this->get('request');
     	
@@ -1751,6 +1726,35 @@ class FacturaController extends Controller
     	ob_clean();
     	flush();
     	readfile( $abririps );
-    }
+    }*/
+    
+    
+    private function instanciarImpreso($title)
+        {
+            // se instancia el objeto del tcpdf
+            $pdf = $this->get('white_october.tcpdf')->create();
+
+            $pdf->setFontSubsetting(true);
+            $pdf->SetFont('dejavusans', '', 8, '', true);
+
+            // Header and footer
+            //$pdf->SetHeaderData('logo.jpg', 20, 'Hospital San Agustin', $title);
+            $pdf->setFooterData(array(0,64,0), array(0,64,128));
+
+            // set header and footer fonts
+            $pdf->setHeaderFont(Array('dejavusans', '', 8));
+            $pdf->setFooterFont(Array('dejavusans', '', 8));
+
+            // set margins
+            $pdf->SetMargins(PDF_MARGIN_LEFT, 30, PDF_MARGIN_RIGHT);
+            $pdf->SetHeaderMargin(1);
+            $pdf->SetFooterMargin(10);
+
+            // set image scale factor
+            $pdf->setImageScale(5);
+            $pdf->AddPage();
+
+            return $pdf;
+         }
     
 }

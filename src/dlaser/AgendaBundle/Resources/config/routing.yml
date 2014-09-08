@@ -206,6 +206,14 @@ informe_tipo_paciente:
     pattern:  /informe/tipo/{paciente}/paciente
     defaults: { _controller: AgendaBundle:InformeCita:informePaciente }
     
+informe_paciente_print:
+    pattern:  /informe/tipo/{paciente}/paciente/print
+    defaults: { _controller: AgendaBundle:InformeCita:informePacientePrint }
+    
 informe_tipo_citas:
     pattern:  /informe/tipo/citas
     defaults: { _controller: AgendaBundle:InformeCita:informeCitas }
+    
+informe_tipo_print:
+    pattern:  /informe/tipo/citas/print
+    defaults: { _controller: AgendaBundle:InformeCita:printInfoGeneral }

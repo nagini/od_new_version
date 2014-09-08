@@ -11,16 +11,30 @@
 
 {% block cuerpo %}
 	<span class="label label-inverse">Sede:</span>
-		<span class="label label-info">{{ sede.nombre }}</span><br />
+		<span class="label label-info">{{ sede.nombre }}</span>
 		
 	<span class="label label-inverse">Medico:</span>
-		<span class="label label-info">{{ usuario.nombre }} {{ usuario.apellido }}</span><br />
+		<span class="label label-info">{{ usuario.nombre }} {{ usuario.apellido }}</span>
 		
 	<span class="label label-inverse">Desde:</span>
-		<span class="label label-info">{{ f_i }}</span><br />
+		<span class="label label-info">{{ f_i }}</span>
 		
 	<span class="label label-inverse">Hasta:</span>
 		<span class="label label-info">{{ f_f }}</span>
+                
+    {% if entities %}
+    	<form action="{{ path('factura_honorario_imprimir') }}" method="post">
+            <div>
+    		<input type="hidden" name="sede" value="{{ sede.id }}" />
+    		<input type="hidden" name="usuario" value="{{ usuario.id }}" />
+    		<input type="hidden" name="f_inicio" value="{{ f_i }}" />
+    		<input type="hidden" name="f_fin" value="{{ f_f }}" />
+            </div>
+    		
+                <button class="btn" type="submit"><i class="icon-print"></i></button>
+    		
+    	</form>
+    {% endif %}
 
     <table class="table table-hover">
         <thead>
@@ -60,18 +74,7 @@
         
         </tbody>
     </table>
-    
-    {% if entities %}
-    	<form action="{{ path('factura_honorario_imprimir') }}" method="post">
-    		<input type="hidden" name="sede" value="{{ sede.id }}" />
-    		<input type="hidden" name="usuario" value="{{ usuario.id }}" />
-    		<input type="hidden" name="f_inicio" value="{{ f_i }}" />
-    		<input type="hidden" name="f_fin" value="{{ f_f }}" />
-    		
-    		<!--<button class="btn btn-success" type="submit">Exportar a PDF</button>-->
-    		
-    	</form>
-    {% endif %}
+        
 {% endblock %}
 
 {% block javascripts %}

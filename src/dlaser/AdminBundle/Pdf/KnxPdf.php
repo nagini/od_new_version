@@ -15,7 +15,7 @@ class KnxPdf extends \TCPDF
 		$this->SetFont('helvetica', '', 7);
 		
 		$this->SetY($y);
-		$this->Cell(0, 0, 'IPS SERVIESPECIALISTA ', 0, false, 'C', 0, '', 0, false, 'M', 'M');
+		$this->Cell(0, 0, 'ODONTOLOGIA', 0, false, 'C', 0, '', 0, false, 'M', 'M');
 		
 		$this->SetY($y+4);
 		$this->Cell(0, 0, 'EMPRESA PRIVADA DE ODONTOLOGIA', 0, false, 'C', 0, '', 0, false, 'M', 'M');

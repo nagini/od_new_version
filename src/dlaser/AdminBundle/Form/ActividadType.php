@@ -13,7 +13,7 @@ class ActividadType extends AbstractType
         $builder
         ->add('cargo', 'entity', array('required' => true, 'class' => 'dlaser\ParametrizarBundle\Entity\Cargo', 'empty_value' => 'Elige un cargo'))
         ->add('estado', 'choice', array('required' => true, 'choices' => array('A' => 'Activo', 'I' => 'Inactivo')))
-        ->add('precio', 'integer', array('required' => false, 'attr' => array('placeholder' => 'Valor de la actividad', 'autofocus'=>'autofocus')))
+        ->add('precio', 'integer', array('required' => true, 'attr' => array('placeholder' => 'Valor de la actividad', 'autofocus'=>'autofocus')))
         
                 
         ;

@@ -22,31 +22,30 @@ class AgendaRepository extends EntityRepository
 	{
 		$em = $this->getEntityManager();
 		$dql = "SELECT 
-					f.id,
-                    c.hora,
-					c.estado as estadoCita,
-                    f.fecha,            		
-                    p.identificacion,
-                    p.priNombre,
-                    p.segNombre,
-                    p.priApellido,
-                    p.segApellido,
-					p.id as paciente,
-                    cli.id as cliente,					
-                    car.nombre as cargo,                                        
-            		f.estado
-                FROM ParametrizarBundle:Factura f
-                LEFT JOIN f.cupo c
-                LEFT JOIN f.cliente cli
-                LEFT JOIN f.paciente p
-                LEFT JOIN f.cargo car
-                LEFT JOIN c.agenda a
-                WHERE f.sede = :sede
-                    AND f.estado != :estado
-            		AND f.estado != 'X'     
-					AND car.cups NOT IN (933600)       		
-                    AND a.usuario = :usuario
-                ORDER BY c.hora ASC";
+                            f.id,
+                            c.hora,
+                            c.estado as estadoCita,
+                            f.fecha,            		
+                            p.identificacion,
+                            p.priNombre,
+                            p.segNombre,
+                            p.priApellido,
+                            p.segApellido,
+                            p.id as paciente,
+                            cli.id as cliente,					
+                            car.nombre as cargo,                                        
+                            f.estado
+                        FROM ParametrizarBundle:Factura f
+                            LEFT JOIN f.cupo c
+                            LEFT JOIN f.cliente cli
+                            LEFT JOIN f.paciente p
+                            LEFT JOIN f.cargo car
+                            LEFT JOIN c.agenda a
+                        WHERE f.sede = :sede
+                            AND f.estado != :estado
+                            AND f.estado != 'X'                                  		
+                            AND a.usuario = :usuario
+                        ORDER BY c.hora ASC";
 		
 		$query = $em->createQuery($dql);
 		
@@ -57,6 +56,23 @@ class AgendaRepository extends EntityRepository
         $query->setParameter('usuario', $medico);
         
         return  $query->getArrayResult();
+	}
+        
+        public function findAgendasActivas()
+	{
+            $em = $this->getEntityManager();
+            $dql = 'SELECT a.id, a.fechaInicio, a.fechaFin, a.intervalo, a.nota, a.estado, 
+                           u.nombre AS profesional, s.nombre AS sede, s.id AS sedeid
+                    FROM AgendaBundle:Agenda a
+                    LEFT JOIN a.sede s
+                    LEFT JOIN a.usuario u
+                    WHERE a.fechaFin > :fi  
+                    ORDER BY s.nombre ASC';
+
+            $query = $em->createQuery($dql);                
+            $query->setParameter('fi', new \DateTime('now'));	
+
+            return $query->getResult();
 	}
 	
 	

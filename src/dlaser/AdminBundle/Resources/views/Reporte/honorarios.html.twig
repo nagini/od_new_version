@@ -1,0 +1,81 @@
+{% extends "::simple.html.twig" %}
+
+{% block stylesheets %}
+<style>
+	body{font-size: 31px;}
+
+	table {
+	  clear: both;
+	  margin-bottom: 2em;
+	  width: 100%;
+	}
+
+	th {
+	  background-color: #C6C6C6;
+	  text-align: center;
+	}
+	
+	tr, th, td {
+	  border: 1px solid #C6C6C6;
+	  border-width: 1px 0;
+	  padding: .5em .25em;
+	  font-size: 30px;
+	}
+</style>    
+{% endblock %}
+
+
+
+{% block head %}
+	<p align="center">SERVICIOS PRESTADOS DESDE EL <b>{{ f_i|date('d-m-Y') }}</b> HASTA EL <b>{{ f_f|date('d-m-Y') }}</b><br />POR:<br /><b>{{ usuario.nombre }} {{ usuario.apellido }}</b></p>
+{% endblock %}
+
+{% block body %}
+
+	<table border="1">
+		<tbody>
+			<tr>
+				<td width="5%">Tipo</td>
+				<td width="10%">Identificación</td>
+				<td width="10%">Fecha</td>
+				<td width="10%">Cliente</td>
+				<td width="5%">Autorización</td>
+				<td width="30%">Paciente</td>
+				<td width="30%">Cargo</td>
+			</tr>
+	        
+        {% for entity in entities %}
+            <tr>
+                <td width="5%">{{ entity.tipoId }}</td>
+                <td width="10%">{{ entity.identificacion }}</td>
+                <td width="10%">{{ entity.fecha|date('d-m-Y') }}</td>
+                <td width="10%">{{ entity.nombre }}</td>
+                <td width="5%">{{ entity.autorizacion }}</td>
+                <td width="30%">{{ entity.priNombre|capitalize }} {{ entity.segNombre|capitalize }} {{ entity.priApellido|capitalize }} {{ entity.segApellido|capitalize }}</td>
+                <td width="30%">{{ entity.cups }}</td>
+            </tr>
+         {% else %}
+         	<tr>
+         		<td COLSPAN="7">No tenemos actividades realizadas en este periodo de tiempo.</td>
+         	</tr>
+        {% endfor %}
+        
+        	<tr>
+         		<td COLSPAN="7"><p align="center"><b>CONSOLIDADO DE ACTIVIDADES</b></p></td>
+         	</tr>
+        
+        {% for canti in cantidad %}
+            <tr>
+                <td COLSPAN="6">{{ canti.nombre }}</td>
+                <td COLSPAN="1">{{ canti.cantidad }}</td>
+                
+            </tr>
+         {% else %}
+         	<tr>
+         		<td>No tenemos actividades realizadas en este periodo de tiempo.</td>
+         	</tr>
+        {% endfor %}       
+        </tbody>
+    </table>
+    
+{% endblock %}

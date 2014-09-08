@@ -1,0 +1,45 @@
+{% extends "::simple.html.twig" %}
+
+
+{% block head %}
+    <p>Informe Citas Paciente {{ paciente.priNombre }} {{ paciente.segNombre }} {{ paciente.priApellido }} {{ paciente.segApellido }}</p>
+	<p> C.C :{{ paciente.identificacion }}  Movil : {{ paciente.movil }}</p>
+{% endblock %}
+
+{% block body %}
+
+{% if cupos %}
+    {% set misEstados = {'A':'Pendiente','CA':'Cancelado','RE':'Reprogramado','CO':'Incumplida la cita','CU':'Cumplido sin cita','IN':'Incumplido','PN':'Programar Nueva Cita','DE':'Desertor','NO':'No iniciada','FI':'Finalizado', 'PD': 'Cumplida con cita'} %}
+    <div>	    
+        <table border="1">	            
+            <tbody>
+                <tr>
+                    <td width="3%">No</td>
+                    <td width="10%">Estado</td>	
+                    <td width="10%">Fecha Agenda</td>
+                    <td width="8%">hora Cita</td>
+                    <td width="10%">Agenda</td>
+                    <td width="20%">Nota</td>
+                    <td width="20%">Observacion</td>	                    
+                    <td width="20%">Actividad</td>	                                        
+                </tr>
+
+                {% for cupo in cupos %}
+                        <tr>
+                                <td width="3%">{{ loop.index}}</td>
+                                <td width="10%">{{ misEstados[cupo.estado]}}</td>
+                                <td width="10%">{{ cupo.fechaAgenda | date('d/m/Y') }}</td>
+                                <td width="8%">{{ cupo.horaCupo | date('h:i') }}</td>
+                                <td width="10%">{{ cupo.agenda }}</td>	            			
+                                <td width="20%">{{ cupo.nota }}</td>	         	         	            			
+                                <td width="20%">{{ cupo.verificacion }}</td>      			
+                                <td width="20%">{{ cupo.cargo }}</td>	            			        			
+                        </tr>
+                {% endfor %}	            	
+            </tbody>
+        </table>       
+    </div>    
+{% else %}
+    <p>No hay información disponible</p>
+{% endif %} 	
+{% endblock %}

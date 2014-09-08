@@ -12,8 +12,12 @@ class ContratoController extends Controller
     
     public function newAction($id)
     {
+        $user = $this->get('security.context')->getToken()->getUser(); 
+        $user = $user->getId();        
+        
         $entity = new Contrato();
-        $form   = $this->createForm(new ContratoType(), $entity);
+        $form   = $this->createForm(new ContratoType(), $entity, array('userId' => $user));
+        
         
         $em = $this->getDoctrine()->getManager();
         $cliente = $em->getRepository('ParametrizarBundle:Cliente')->find($id);
@@ -41,11 +45,13 @@ class ContratoController extends Controller
         if (!$cliente) {
             throw $this->createNotFoundException('El cliente solicitado no existe.');
         }
+        $user = $this->get('security.context')->getToken()->getUser(); 
+        $user = $user->getId();  
         
         $entity  = new Contrato();
         
         $request = $this->getRequest();
-        $form    = $this->createForm(new ContratoType(), $entity);
+        $form    = $this->createForm(new ContratoType(), $entity, array('userId' => $user));
         $form->bind($request);
     
         if ($form->isValid()) {
@@ -95,7 +101,9 @@ class ContratoController extends Controller
         $breadcrumbs->addItem("Detalle ".$cliente->getNombre(),$this->get("router")->generate("cliente_show",array("id" => $cliente->getId())));
         $breadcrumbs->addItem("Detalle ".$contrato->getContacto());
         
-        $actividades = $em->getRepository('ParametrizarBundle:Actividad')->findBy(array('contrato' => $id));
+        $actividades = $em->getRepository('ParametrizarBundle:Actividad')->findBy(array('contrato' => $id));        
+        $paginator = $this->get('knp_paginator');
+        $actividades = $paginator->paginate($actividades, $this->getRequest()->query->get('page', 1),15);        
     
         return $this->render('AdminBundle:Contrato:show.html.twig', array(
                 'contrato'    => $contrato,
@@ -112,6 +120,9 @@ class ContratoController extends Controller
             throw $this->createNotFoundException('El contrato solicitado no existe.');
         }
         
+        $user = $this->get('security.context')->getToken()->getUser(); 
+        $user = $user->getId();  
+        
         $cliente = $contrato->getCliente();
         
         $breadcrumbs = $this->get("white_october_breadcrumbs");
@@ -121,7 +132,7 @@ class ContratoController extends Controller
         $breadcrumbs->addItem("Detalle ",$this->get("router")->generate("contrato_show",array("id" => $contrato->getId())));
         $breadcrumbs->addItem("Modificar ".$contrato->getContacto());
     
-        $editForm = $this->createForm(new ContratoType(), $contrato);
+        $editForm = $this->createForm(new ContratoType(), $contrato, array('userId' => $user));
     
         return $this->render('AdminBundle:Contrato:edit.html.twig', array(
                 'entity'      => $contrato,
@@ -138,7 +149,10 @@ class ContratoController extends Controller
             throw $this->createNotFoundException('El contrato solicitado no existe');
         }
     
-        $editForm   = $this->createForm(new ContratoType(), $contrato);    
+        $user = $this->get('security.context')->getToken()->getUser(); 
+        $user = $user->getId();  
+        
+        $editForm   = $this->createForm(new ContratoType(), $contrato,  array('userId' => $user));    
         $request = $this->getRequest();    
         $editForm->bind($request);
     

@@ -6,7 +6,7 @@
 
 {% block rastro %}{{ wo_render_breadcrumbs() }}{% endblock %}
 
-{% block titulo %}Listado de cargos{% endblock %}
+{% block titulo %}Listado de procedimientos{% endblock %}
 
 
 
@@ -32,7 +32,7 @@
             </tr>
          {% else %}
          	<tr>
-         		<td colspan="4">No tenemos cargos creados.</td>
+         		<td colspan="4">No tenemos procedimientos creados.</td>
          	</tr>
         {% endfor %}
         </tbody>
@@ -42,6 +42,6 @@
 			{{ knp_pagination_render(entities) }}
     	{% endif %}
     
-    <a href="{{ path('cargo_new') }}" class="btn">Nuevo cargo</a>    
+    <a href="{{ path('cargo_new') }}" class="btn">Nuevo procedimiento</a>    
     
 {% endblock %}

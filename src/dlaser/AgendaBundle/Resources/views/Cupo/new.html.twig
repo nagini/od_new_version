@@ -16,7 +16,7 @@
 
 
 {% block cuerpo %}
-
+    
 <form action="{{ path('cupo_save') }}" method="post" {{ form_enctype(form) }} class="form-horizontal">
     <fieldset>
     	<legend>Datos de la reserva</legend>
@@ -25,28 +25,26 @@
         <div id="ajaxMsg"></div>
         
         <div class="control-group">
-        	<label class="control-label" >
-				{{ form_label(form.sede) }}
-         	</label>
-            
+            <label class="control-label" >
+                {{ form_label(form.sede) }}
+            </label>
             <div class="controls">
-				{{ form_errors(form.sede) }}
+                {{ form_errors(form.sede) }}
             	{{ form_widget(form.sede) }}
-			</div>            
+            </div>            
         </div>        
          
          
          <div class="control-group">
-         	<label class="control-label" >
-         		{{ form_label(form.paciente) }}
-         	</label>             
+            <label class="control-label" >
+                {{ form_label(form.paciente) }}
+            </label>             
             <div class="controls">
-				{{ form_errors(form.paciente) }}
+                {{ form_errors(form.paciente) }}
             	{{ form_widget(form.paciente) }}
             	<a class="btn btn-info" id="btnNewPaciente" href="{{ path('paciente_new') }}" target="popup" title="Nuevo paciente" onClick="popup(this.href,750,600); return false;">Crear Nuevo</a>
-            	
             	<a class="btn" id="btnAjax" href="#" title="Consultar"><i class="icon-search"></i></a>
-			</div>            
+            </div>
         </div>
         
         <div class="control-group warning" id="infoPaciente" style="display:none;">
@@ -57,63 +55,58 @@
         </div> 
         
         <div class="control-group">
-        	<label class="control-label" >
-				{{ form_label(form.cliente) }}
-         	</label>			
+            <label class="control-label" >
+                {{ form_label(form.cliente) }}
+            </label>			
             <div class="controls">
-				{{ form_errors(form.cliente) }}
+                {{ form_errors(form.cliente) }}
             	{{ form_widget(form.cliente) }}
-        		<a id="create-user">Agregar cliente</a>
-			</div>            
+                <a id="create-user">Agregar cliente</a>
+            </div>            
         </div>
         
         <div class="control-group">
-        	<label class="control-label" >
-				{{ form_label(form.cargo) }}
-         	</label>			
+            <label class="control-label" >
+                {{ form_label(form.cargo) }}
+            </label>
             <div class="controls">
-				{{ form_errors(form.cargo) }}
+                {{ form_errors(form.cargo) }}
             	{{ form_widget(form.cargo) }}        		
-			</div>            
+            </div>
         </div>
         
         <div class="control-group">
-        	<label class="control-label" >
-				{{ form_label(form.agenda) }}
-         	</label>			
+            <label class="control-label" >
+                {{ form_label(form.agenda) }}
+            </label>			
             <div class="controls">
-				{{ form_errors(form.agenda) }}
+                {{ form_errors(form.agenda) }}
             	{{ form_widget(form.agenda) }}        		
-			</div>            
+            </div>            
         </div>
         
         <div class="control-group">
-        	<label class="control-label" >
-				{{ form_label(form.hora) }}
-         	</label>			
+            <label class="control-label" >
+                {{ form_label(form.hora) }}
+            </label>
             <div class="controls">
-				{{ form_errors(form.hora) }}
+                {{ form_errors(form.hora) }}
             	{{ form_widget(form.hora) }}        		
-			</div>            
-        </div>         
-        
+            </div>            
+        </div>        
         
         <div id="dialog-form" title="Agregar cliente" style="display:none">		
-
-				<fieldset>
-					<legend>Datos de la aseguradora</legend>
-        			{{ form_widget(form_afil) }}
-				</fieldset>
-
-		</div>              
-                      
+            <fieldset>
+                <legend>Datos de la aseguradora</legend>
+                {{ form_widget(form_afil) }}
+            </fieldset>
+        </div>            
             {{ form_rest(form) }}
-    
     	<div class="control-group">        				
             <div class="controls">
-				<button class="btn btn-success" type="submit">Aceptar</button>
-    			<a href="{{ path('cupo_list') }}" class="btn">Listado de reservas</a>        		
-			</div>            
+                <button type="submit" class="btn btn-success" >Aceptar</button>                
+                <a href="{{ path('cupo_list') }}" class="btn">Listado de reservas</a>        		
+            </div>            
         </div>    	
     </fieldset>
         
@@ -130,15 +123,16 @@
 
 <script type="text/javascript">
 
-	function popup(url,ancho,alto) {
-		var posicion_x; 
-		var posicion_y; 
+    function popup(url,ancho,alto) 
+    {
+        var posicion_x; 
+        var posicion_y; 
 
-		posicion_x=(screen.width/2)-(ancho/2); 
-		posicion_y=(screen.height/2)-(alto/2); 
+        posicion_x=(screen.width/2)-(ancho/2); 
+        posicion_y=(screen.height/2)-(alto/2); 
 
-		window.open(url, "", "width="+ancho+",height="+alto+",menubar=0,toolbar=0,directories=0,scrollbars=yes,resizable=no,left="+posicion_x+",top="+posicion_y+"");
-	} 
+        window.open(url, "", "width="+ancho+",height="+alto+",menubar=0,toolbar=0,directories=0,scrollbars=yes,resizable=no,left="+posicion_x+",top="+posicion_y+"");
+    } 
 
 	$(function() {
 		// a workaround for a flaw in the demo system (http://dev.jqueryui.com/ticket/4375), ignore!

@@ -8,18 +8,10 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Doctrine\ORM\EntityRepository;
 
 class CupoType extends AbstractType
-{    
-    private $options;
-    
-    public function __construct(array $options = null)
-    {
-        $this->options = $options;
-    }
-    
+{           
     public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        
-        $id = $this->options['user'];
+    {        
+        $id = $options['userId'];
         
         $builder        
         ->add('sede', 'entity', array(
@@ -43,15 +35,14 @@ class CupoType extends AbstractType
     /*setDefaultOptions() se indica el namespace de la entidad cuyos datos modifica este formulario.*/
     public function setDefaultOptions(OptionsResolverInterface $resolver) {
     	$resolver
-    	->setDefaults(array('data_class' => 'dlaser\AgendaBundle\Entity\Cupo'));
+    	->setDefaults(array(
+                            'data_class' => 'dlaser\AgendaBundle\Entity\Cupo',
+                            'userId' => ''
+                    ));
     }
 
     public function getName()
     {
         return 'Cupo';
-    }
-    
-    public function getDefaultOptions(array $options){    
-        return $options;
     }
 }

@@ -13,7 +13,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
  *
  * @ORM\Table(name="paciente")
  * @ORM\Entity
- * @DoctrineAssert\UniqueEntity("identificacion")
+ * @DoctrineAssert\UniqueEntity(fields="identificacion", message="El paciente con este numero de indentificacion ya ha sido creado en el sistema.")
  */
 class Paciente
 {

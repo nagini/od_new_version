@@ -36,17 +36,16 @@
 	            </thead>
 	            <tbody>
 	            	{% for cupo in cupos %}
-	            		<tr>
-	            			<td>Programar</td>	            			
-	            			<td>{{ cupo.verificacion }}</td>
-	            			<td>{{ cupo.identificacion }}</td>
-	            			<td>{{ cupo.priNombre }} {{ cupo.priApellido }}</td>
-	            			<td>{{ cupo.movil }}</td>
-	            			<td>{{ cupo.cargo }}</td>
-	            			<td><button type='button' class='btn'  onClick='showDialog({{ cupo.id }},{{ cupo.cliente }},{{ cupo.paciente }}); return false;'><i class="icon-ok"></i></button></td>	            				            			
-	            		</tr>
-	            	{% endfor %}
-	            	
+                            <tr>
+                                <td>Programar</td>	            			
+                                <td>{{ cupo.verificacion }}</td>
+                                <td>{{ cupo.identificacion }}</td>
+                                <td>{{ cupo.priNombre }} {{ cupo.priApellido }}</td>
+                                <td>{{ cupo.movil }}</td>
+                                <td>{{ cupo.cargo }}</td>
+                                <td><button type='button' class='btn'  onClick='showDialog({{ cupo.id }},{{ cupo.cliente }},{{ cupo.paciente }}); return false;'><i class="icon-ok"></i></button></td>	            				            			
+                            </tr>
+                        {% endfor %}	            	
 	            </tbody>
 	        </table>       
 	    </div>
@@ -61,55 +60,58 @@
               </div>
               <div class='modal-body'>               					
               	<form  class="form-horizontal" method="post" {{ form_enctype(formulario) }}>
-	    				    			
-							<input class="span1" style="display:none" id="Cupo_cliente" type="text" disabled>	    				    			
-							<input class="span1" style="display:none" id="Cupo_paciente" type="text" disabled>
-							<input class="span1" style="display:none" id="Cupo_CupoId" type="text" disabled>
-					      	<div class="control-group">
-									{{ form_label(formulario.sede) }}
-								<div class="controls">
-									{{ form_errors(formulario.sede) }}
-									{{ form_widget(formulario.sede) }}
-								</div>
-							</div>
-							<div class="control-group">
-									{{ form_label(formulario.cargo) }}
-								<div class="controls">
-									{{ form_errors(formulario.cargo) }}
-									<div class="input-prepend input-append">									  
-									  {{ form_widget(formulario.cargo) }}									  
-									  <span class="add-on"><i class="icon-search"></i></span>
-									</div>
-									
-								</div>
-							</div>
-							<div class="control-group">
-									{{ form_label(formulario.agenda) }}
-								<div class="controls">
-									{{ form_errors(formulario.agenda) }}
-									{{ form_widget(formulario.agenda) }}
-								</div>
-							</div>
-							<div class="control-group">
-									{{ form_label(formulario.hora) }}
-								<div class="controls">
-									{{ form_errors(formulario.hora) }}
-									{{ form_widget(formulario.hora) }}
-								</div>
-							</div>
-							{{ form_rest(formulario) }}	    			
+
+                    <input class="span1" style="display:none" id="Cupo_cliente" type="text" disabled>
+                    <input class="span1" style="display:none" id="Cupo_paciente" type="text" disabled>
+                    <input class="span1" style="display:none" id="Cupo_CupoId" type="text" disabled>
+                    
+                    <div class="control-group">
+                            {{ form_label(formulario.sede) }}
+                        <div class="controls">
+                            {{ form_errors(formulario.sede) }}
+                            {{ form_widget(formulario.sede) }}
+                        </div>
+                    </div>
+                    <div class="control-group">
+                            {{ form_label(formulario.cargo) }}
+                        <div class="controls">
+                            {{ form_errors(formulario.cargo) }}
+                            <div class="input-prepend input-append">									  
+                                {{ form_widget(formulario.cargo) }}									  
+                                <span class="add-on"><i class="icon-search"></i></span>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        {{ form_label(formulario.agenda) }}
+                        <div class="controls">
+                            {{ form_errors(formulario.agenda) }}
+                            {{ form_widget(formulario.agenda) }}
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        {{ form_label(formulario.hora) }}
+                        <div class="controls">
+                            {{ form_errors(formulario.hora) }}
+                            {{ form_widget(formulario.hora) }}
+                        </div>
+                    </div>
+                            {{ form_rest(formulario) }}	    			
               	</form>              	
               </div>
               <div class='modal-footer'>
               <div id="div_carga" style="display:none" class="progress progress-striped active">
-				  <div class="bar" style="width: 70%;"></div>
-				</div>				
-              	<button class='btn btn-primary' data-loading-text='Cargando...' type="button" onClick='saveCita(); return false;'>Aceptar</button>
-              	<button class='btn btn-danger' data-dismiss='modal' aria-hidden='true'>Cerrar</button>              	
+                  <div class="bar" style="width: 70%;"></div>                      
+              </div>				
+                  
+              	<button class='btn btn-primary' data-loading-text='Cargando...' type="button" onClick='saveCita(); return false;'>Aceptar</button>                
+              	<button class='btn btn-danger' class='close' data-dismiss='modal' aria-hidden='true'>Cerrar</button>              	
               </div>             
         </div>
     {% endif %}	       
 {% endblock %}
+		
 
 {% block javascripts %}
 
@@ -119,135 +121,135 @@
 
 <script type="text/javascript">
 
-		$('#div_carga').hide().ajaxStart(function() {
-					$(this).show();
-		}).ajaxStop(function() {
-				$(this).hide();
-		})
-		
-		function showDialog(cupo,cliente,paciente)
-		{			
-			$('#formModal').modal('toggle');
-			$('#Cupo_cliente').val(cliente);
-			$('#Cupo_paciente').val(paciente);
-			$('#Cupo_CupoId').val(cupo);
-			buscarCargo();					        
-		}
-		
-		
-		function selectAction(Cupo)
-		{	 
-			 var url = "{{ path('agenda_check_appointment') }}";
-			 var cupo = Cupo;			 			 
-			 
-			 $.post(url,{
-				 cupo: cupo         
-			 },function(data){
-			     if(data.responseCode==200 ){
-			     	$('#ajaxMsg').html(data.msg);
-			         $('#ajaxMsg').css("color","green");
-			         location.reload();            
-			     }
-			     else if(data.responseCode==400){
-			     	$('#ajaxMsg').html(data.msg);
-			         $('#ajaxMsg').css("color","red");            
-			     }
-			     else{
-			 	    alert("Ha ocurrido un error en el sistema.");
-			     }
-			 }); 
-		}
+        $('#div_carga').hide().ajaxStart(function() {
+                                $(this).show();
+        }).ajaxStop(function() {
+                        $(this).hide();
+        })
 
-		function saveCita()
-		{	 
-			 var url = "{{ path('medico_save_new_cupo') }}";
-
-			 var paciente = $('#Cupo_paciente').val();
-			 var sede = $('#Cupo_sede').val();
-			 var cliente= $('#Cupo_cliente').val();
-			 var cargo = $('#Cupo_cargo').val();
-			 var agenda = $('#Cupo_agenda').val();
-			 var hora = $('#Cupo_hora').val();
-			 var Cupo = $('#Cupo_CupoId').val();
-
-			 if($.isNumeric(cliente) && $.isNumeric(sede) && $.isNumeric(paciente) && $.isNumeric(cargo) && $.isNumeric(agenda) && hora)
-			 {
-				 $.post(url,{
-				     paciente: paciente,
-				     sede: sede,
-				     cliente: cliente,
-				     cargo: cargo,
-				     agenda: agenda,
-				     hora: hora         
-				 },function(data){
-				     if(data.responseCode==200 ){
-				     	$('#ajaxMsg').html(data.msg);
-				         $('#ajaxMsg').css("color","green");
-				         selectAction(Cupo);				         			         		                     
-				     }
-				     else if(data.responseCode==400){
-				     	$('#ajaxMsg').html(data.msg);
-				         $('#ajaxMsg').css("color","red");            
-				     }
-				     else{
-				 	    alert("Ha ocurrido un error en el sistema.");
-				     }
-				 }); 
-			  }else{
-				  $('#ajaxMsg').html("Hay campos no validos, verifique la información.");
-			         $('#ajaxMsg').css("color","red");
-				  }			 
-		}
+        function showDialog(cupo,cliente,paciente)
+        {			
+                $('#formModal').modal('toggle');
+                $('#Cupo_cliente').val(cliente);
+                $('#Cupo_paciente').val(paciente);
+                $('#Cupo_CupoId').val(cupo);
+                buscarCargo();					        
+        }
 
 
-		function buscarCargo(){
-	        
-	    	var url="{{ path('cargo_buscar') }}";
+        function selectAction(Cupo)
+        {	 
+                 var url = "{{ path('agenda_check_appointment') }}";
+                 var cupo = Cupo;			 			 
 
-	    	var cliente = $("#Cupo_cliente").val();
-	    	var sede = $("#Cupo_sede").val();    	
-	        
-	        $.post(url,{
-	               cliente: cliente,
-	               sede: sede
-	        },function(data){
-	            if(data.responseCode==200 ){
+                 $.post(url,{
+                         cupo: cupo         
+                 },function(data){
+                     if(data.responseCode==200 ){
+                        $('#ajaxMsg').html(data.msg);
+                         $('#ajaxMsg').css("color","green");
+                         location.reload();            
+                     }
+                     else if(data.responseCode==400){
+                        $('#ajaxMsg').html(data.msg);
+                         $('#ajaxMsg').css("color","red");            
+                     }
+                     else{
+                            alert("Ha ocurrido un error en el sistema.");
+                     }
+                 }); 
+        }
 
-	                $("#ajaxMsg").empty();
+        function saveCita()
+        {	 
+                 var url = "{{ path('medico_save_new_cupo') }}";
 
-	        		var select = $('#Cupo_cargo');
-	        		if(select.prop) {
-	        		  var options = select.prop('options');
-	        		}
-	        		else {
-	        		  var options = select.attr('options');
-	        		}
-	        		$('option', select).remove();
+                 var paciente = $('#Cupo_paciente').val();
+                 var sede = $('#Cupo_sede').val();
+                 var cliente= $('#Cupo_cliente').val();
+                 var cargo = $('#Cupo_cargo').val();
+                 var agenda = $('#Cupo_agenda').val();
+                 var hora = $('#Cupo_hora').val();
+                 var Cupo = $('#Cupo_CupoId').val();
 
-	        		options[options.length] = new Option('Seleccione actividad', '');
+                 if($.isNumeric(cliente) && $.isNumeric(sede) && $.isNumeric(paciente) && $.isNumeric(cargo) && $.isNumeric(agenda) && hora)
+                 {
+                         $.post(url,{
+                             paciente: paciente,
+                             sede: sede,
+                             cliente: cliente,
+                             cargo: cargo,
+                             agenda: agenda,
+                             hora: hora         
+                         },function(data){
+                             if(data.responseCode==200 ){
+                                $('#ajaxMsg').html(data.msg);
+                                 $('#ajaxMsg').css("color","green");
+                                 selectAction(Cupo);				         			         		                     
+                             }
+                             else if(data.responseCode==400){
+                                $('#ajaxMsg').html(data.msg);
+                                 $('#ajaxMsg').css("color","red");            
+                             }
+                             else{
+                                    alert("Ha ocurrido un error en el sistema.");
+                             }
+                         }); 
+                  }else{
+                          $('#ajaxMsg').html("Hay campos no validos, verifique la información.");
+                         $('#ajaxMsg').css("color","red");
+                          }			 
+        }
 
-	        		$.each(data.cargo, function(val, text) {
-	        		    options[options.length] = new Option(text, val);
-	        		});
-	        		
-	        		select.val('');
-	        		                    
-	            }
-	            else if(data.responseCode==400){
 
-	            	$('#Cupo_cargo').empty();
-	            	$('#Cupo_agenda').empty();
-	            	$('#Cupo_hora').empty();            	            	
-	            	$('#ajaxMsg').html(data.msg);
-	                $('#ajaxMsg').css("color","red");
-	                
-	                
-	            }
-	            else{
-	        	    alert("Ha ocurrido un error en el sistema.");
-	            }
-	        });    	
-	    }
+        function buscarCargo(){
+
+        var url="{{ path('cargo_buscar') }}";
+
+        var cliente = $("#Cupo_cliente").val();
+        var sede = $("#Cupo_sede").val();    	
+
+        $.post(url,{
+               cliente: cliente,
+               sede: sede
+        },function(data){
+            if(data.responseCode==200 ){
+
+                $("#ajaxMsg").empty();
+
+                        var select = $('#Cupo_cargo');
+                        if(select.prop) {
+                          var options = select.prop('options');
+                        }
+                        else {
+                          var options = select.attr('options');
+                        }
+                        $('option', select).remove();
+
+                        options[options.length] = new Option('Seleccione actividad', '');
+
+                        $.each(data.cargo, function(val, text) {
+                            options[options.length] = new Option(text, val);
+                        });
+
+                        select.val('');
+
+            }
+            else if(data.responseCode==400){
+
+                $('#Cupo_cargo').empty();
+                $('#Cupo_agenda').empty();
+                $('#Cupo_hora').empty();            	            	
+                $('#ajaxMsg').html(data.msg);
+                $('#ajaxMsg').css("color","red");
+
+
+            }
+            else{
+                    alert("Ha ocurrido un error en el sistema.");
+            }
+        });    	
+        }
 
 $(document).ready(function() {		
 

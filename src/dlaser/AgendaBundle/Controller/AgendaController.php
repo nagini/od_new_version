@@ -16,18 +16,42 @@ use dlaser\AgendaBundle\Form\AsignarCitaType;
 
 class AgendaController extends Controller
 {
+    /* se instancia una variable privada para lamacenar la informacion de las agendas que se encuentran disponibles en las sedes 
+     relacionadas con el usuario.*/
+    private $array = array();
+    
+    public function recursion($agenda, $int, $sede)
+    {        
+        if( $int >  (count($agenda)-1))
+            $this->array;        
+        elseif($agenda[$int]['sedeid'] != $sede)        
+            $this->recursion ($agenda, ($int+1), $sede);                        
+        else{                        
+            $this->array[$int] = $agenda[$int];                        
+            $this->recursion ($agenda, ($int+1), $sede);
+        }
+        return $this->array;
+    }
+    
     public function listAction()
     {
+        $user = $this->get('security.context')->getToken()->getUser();  
+        $userSedes = $user->getSede();        
+        
         $em = $this->getDoctrine()->getManager();    
-        $agenda = $em->getRepository('AgendaBundle:Agenda')->findAll();
+        $agenda = $em->getRepository('AgendaBundle:Agenda')->findAgendasActivas();
         
-        $query = $em->createQuery(' SELECT a
-                FROM AgendaBundle:Agenda a
-                WHERE a.fechaFin > :fi
-                ORDER BY a.fechaInicio ASC');        
-        
-        $query->setParameter('fi', new \DateTime('now'));        
-        $agenda = $query->getResult();
+        $lista = array();
+        /* se realiza una recursion para optimizar el proceso de seleccion
+         * de todas las agendas relacionadaas con las sedes del usuario.
+         * se envia las agendas, un contador inicial en 0 y el id de cada sede
+         */
+        foreach ($userSedes as $key => $value)    
+           $lista = $this->recursion($agenda, 0, $value->getId());        
+        $agenda = $lista;
+
+        $paginator = $this->get('knp_paginator');
+        $agenda = $paginator->paginate($agenda, $this->getRequest()->query->get('page', 1),20);  
         
         $breadcrumbs = $this->get("white_october_breadcrumbs");
         $breadcrumbs->addItem("Inicio", $this->get("router")->generate("agenda_list"));
@@ -45,7 +69,10 @@ class AgendaController extends Controller
         $entity->setFechaInicio(new \DateTime('now'));
         $entity->setFechaFin(new \DateTime('now'));
         
-        $form   = $this->createForm(new AgendaType(), $entity);
+        // se optiene el usuario que se encuentra activo en el sistema para listar las sedes relacionadas.
+        $user = $this->get('security.context')->getToken()->getUser();                
+        // se envia la informacion por medio de un array al FORMTYPE y estos valores se optienen con el $option en el type
+        $form   = $this->createForm(new AgendaType(), $entity, array('userId' => $user->getId()));
         
         $breadcrumbs = $this->get("white_october_breadcrumbs");
         $breadcrumbs->addItem("Inicio", $this->get("router")->generate("agenda_list"));
@@ -62,14 +89,16 @@ class AgendaController extends Controller
     public function saveAction()
     {
         $em = $this->getDoctrine()->getManager();
+        
+        // se optiene el usuario que se encuentra activo en el sistema para listar las sedes relacionadas.
+        $user = $this->get('security.context')->getToken()->getUser();                  
                 
-        $entity  = new Agenda();        
-        $form    = $this->createForm(new AgendaType(), $entity);
+        $entity  = new Agenda();                
+        $form    = $this->createForm(new AgendaType(), $entity, array('userId' => $user->getId()));
         $form->handleRequest($this->getRequest());   
-                
                        
         if ($form->isValid()) 
-        {        	
+        {      	
             $em->persist($entity);
             $em->flush();
     
@@ -115,13 +144,15 @@ class AgendaController extends Controller
             throw $this->createNotFoundException('La agenda solicitada no existe');
         }
     
+        $user = $this->get('security.context')->getToken()->getUser();
+        
         $breadcrumbs = $this->get("white_october_breadcrumbs");
         $breadcrumbs->addItem("Inicio", $this->get("router")->generate("agenda_list"));
         $breadcrumbs->addItem("Agenda", $this->get("router")->generate("agenda_list"));                
         $breadcrumbs->addItem("Detalle",$this->get("router")->generate("agenda_show",array("id" => $id)));
         $breadcrumbs->addItem("Modificar");
         
-        $editForm = $this->createForm(new AgendaType(), $entity);
+        $editForm = $this->createForm(new AgendaType(), $entity, array('userId' => $user->getId()));
     
         return $this->render('AgendaBundle:Agenda:edit.html.twig', array(
                 'entity'      => $entity,
@@ -139,7 +170,9 @@ class AgendaController extends Controller
             throw $this->createNotFoundException('La agenda solicitada no existe.');
         }
     
-        $editForm   = $this->createForm(new AgendaType(), $entity);         
+        $user = $this->get('security.context')->getToken()->getUser();
+        
+        $editForm   = $this->createForm(new AgendaType(), $entity, array('userId' => $user->getId()));         
         $editForm->handleRequest($this->getRequest());
     
         if ($editForm->isValid()) {
@@ -177,29 +210,28 @@ class AgendaController extends Controller
             $em = $this->getDoctrine()->getManager();
             
             $query = $em->createQuery(' SELECT 
-            								a 
+                                            a 
                                         FROM 
-            								AgendaBundle:Agenda a
+                                            AgendaBundle:Agenda a
                                         WHERE 
-            								a.fechaFin > :fecha AND
-                                        	a.sede = :sede
+                                            a.fechaFin > :fecha AND
+                                            a.sede = :sede
                                         ORDER BY 
-            								a.fechaInicio ASC');
+                                            a.fechaInicio ASC');
             
             
             $query->setParameter('fecha', new \DateTime('now'));
             $query->setParameter('sede', $sede);
             
             $agendas = $query->getResult();
-
-            if($agendas){
-    
-                $response=array("responseCode"=>200);
-    
-                foreach($agendas as $value)
-                {
+          
+            if($agendas)
+            {    
+                $response=array("responseCode"=>200);    
+              foreach($agendas as $value)
+              {
                     $response['agenda'][$value->getId()] = $value->getFechaInicio()->format('d-m-Y H:i')." - ".$value->getFechaFin()->format('H:i')." - ".$value->getNota();             
-                }
+              }
             }else{
                     $response=array("responseCode"=>400, "msg"=>"No hay agendas disponibles para la actividad seleccionada en la sede");
             }

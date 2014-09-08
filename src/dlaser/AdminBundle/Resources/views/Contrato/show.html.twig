@@ -99,6 +99,10 @@
         {% endfor %}
         </tbody>
     </table>
+        
+        {% if actividades %}
+            {{ knp_pagination_render(actividades) }}
+    	{% endif %}
     
     <a href="{{ path('actividad_new', { 'id': contrato.id }) }}" class="btn">Crear actividad</a>
 {% endblock %}

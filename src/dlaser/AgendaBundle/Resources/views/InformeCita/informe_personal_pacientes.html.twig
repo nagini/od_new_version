@@ -9,8 +9,9 @@
 
 {% block cuerpo %}
 
-<h1><p align="center">Informe Citas Paciente {{ paciente.priNombre }} {{ paciente.segNombre }} {{ paciente.priApellido }} {{ paciente.segApellido }}</p></h1>
+<h4>Informe Citas Paciente {{ paciente.priNombre }} {{ paciente.segNombre }} {{ paciente.priApellido }} {{ paciente.segApellido }}</h4>
 	<h5> C.C :{{ paciente.identificacion }}  Movil : {{ paciente.movil }}</h5>
+        <a href="{{ path("informe_paciente_print", {'paciente':paciente.id}) }}" class="btn"><i class="icon-print"></i></a>
 
 {% if cupos %}
 	{% set misEstados = {'A':'Pendiente','CA':'Cancelado','RE':'Reprogramado','CO':'Incumplida la cita','CU':'Cumplido sin cita','IN':'Incumplido','PN':'Programar Nueva Cita','DE':'Desertor','NO':'No iniciada','FI':'Finalizado', 'PD': 'Cumplida con cita'} %}
@@ -18,8 +19,8 @@
 	        <table class="table table-hover">
 	            <thead>
 	                <tr>
-	                	<th>##</th>
-	                	<th>Estado</th>	
+                            <th>##</th>
+                            <th>Estado</th>	
 	                    <th>Fecha Agenda</th>
 	                    <th>Fecha Cita</th>
 	                    <th>Agenda</th>

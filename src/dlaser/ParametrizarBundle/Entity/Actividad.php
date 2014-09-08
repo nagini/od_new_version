@@ -29,7 +29,7 @@ class Actividad
      * @var integer $precio
      * 
      * @ORM\Column(name="precio", type="integer", nullable=false)
-     * @Assert\Range(min = 99)
+     * @Assert\Range(min = 0)
      * @Assert\Range(max = 9999999)
      */
     private $precio;

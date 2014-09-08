@@ -60,7 +60,7 @@ class CargoController extends Controller
             $em->persist($entity);
             $em->flush();            
             
-            $this->get('session')->getFlashBag()->add('ok', 'El cargo ha sido creado éxitosamente.');    
+            $this->get('session')->getFlashBag()->add('ok', 'El procedimiento ha sido creado éxitosamente.');    
             return $this->redirect($this->generateUrl('cargo_show', array("id" => $entity->getId())));    
         }
     
@@ -77,7 +77,7 @@ class CargoController extends Controller
         $cargo = $em->getRepository('ParametrizarBundle:Cargo')->find($id);
     
         if (!$cargo) {
-            throw $this->createNotFoundException('El cargo solicitado no existe.');
+            throw $this->createNotFoundException('El procedimiento solicitado no existe.');
         }
         
         $breadcrumbs = $this->get("white_october_breadcrumbs");
@@ -96,7 +96,7 @@ class CargoController extends Controller
         $cargo = $em->getRepository('ParametrizarBundle:Cargo')->find($id);
     
         if (!$cargo) {
-            throw $this->createNotFoundException('El cargo solicitado no existe');
+            throw $this->createNotFoundException('El procedimiento solicitado no existe');
         }
         
         $breadcrumbs = $this->get("white_october_breadcrumbs");
@@ -119,7 +119,7 @@ class CargoController extends Controller
         $entity = $em->getRepository('ParametrizarBundle:Cargo')->find($id);
     
         if (!$entity) {
-            throw $this->createNotFoundException('El cargo solicitado no existe.');
+            throw $this->createNotFoundException('El procedimiento solicitado no existe.');
         }
     
         $editForm   = $this->createForm(new CargoType(), $entity);    
@@ -131,7 +131,7 @@ class CargoController extends Controller
             $em->persist($entity);
             $em->flush();
     
-            $this->get('session')->getFlashBag()->add('ok', 'El cargo ha sido modificado éxitosamente.');    
+            $this->get('session')->getFlashBag()->add('ok', 'El procedimiento ha sido modificado éxitosamente.');    
             return $this->redirect($this->generateUrl('cargo_edit', array('id' => $id)));
         }
     

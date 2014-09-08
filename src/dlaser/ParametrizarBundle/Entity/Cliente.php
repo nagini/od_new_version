@@ -4,12 +4,15 @@ namespace dlaser\ParametrizarBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
 
 /**
  * dlaser\ParametrizarBundle\Entity\Cliente
  *
  * @ORM\Table(name="cliente")
  * @ORM\Entity
+ * @DoctrineAssert\UniqueEntity(fields="nit", message="Este nit ya esta siendo usado en el sistema.")
+ * @DoctrineAssert\UniqueEntity(fields="nombre", message="Este nombre ya esta siendo usado en el sistema.")
  */
 class Cliente
 {

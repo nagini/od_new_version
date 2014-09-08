@@ -1,0 +1,52 @@
+{% extends "::simple.html.twig" %}
+
+{% block head %}    
+    {% set misEstados = {'A':'Pendiente','CA':'Cancelado','RE':'Reprogramado','CO':'Incumplida la cita','CU':'Cumplido sin cita','IN':'Incumplido','PN':'Programar Nueva Cita','DE':'Desertor','NO':'No iniciada','FI':'Finalizado', 'PD': 'Cumplida con cita'} %}
+    Informe de Citas, estado de {{misEstados[estado]}}
+    <br/>
+{% endblock %}
+
+{% block body %}
+	{% if cupos %}
+	    <div>                 
+                <table border="1">
+	            <thead>
+                        <tr>
+                            <td colspan="10">Informe realizado entre las fechas {{ dateStart | date('d/m/Y') }} hasta {{ dateEnd | date('d/m/Y') }}</td> 
+                        </tr>
+	                <tr>
+                            <th width="2%">#</th>
+                            <th>Identificacion</th>	                                      
+	                    <th>Paciente</th>
+	                    <th>Movil</th>
+	                    <th>Fecha Agenda</th>
+	                    <th>Fecha Cita</th>
+	                    <th>Agenda</th>
+	                    <th>Nota</th>
+	                    <th>Observacion</th>	                    
+	                    <th width="18%">Actividad</th>	                                        
+	                </tr>
+	            </thead>
+	            <tbody>
+	            	{% for cupo in cupos %}
+	            		<tr>
+	            			<td width="2%">{{ loop.index}}</td>
+	            			<td>{{ cupo.identificacion }}</td>
+	            			<td>{{ cupo.priNombre }} {{ cupo.priApellido }}</td>
+	            			<td>{{ cupo.movil }}</td>	            			
+	            			<td>{{ cupo.fechaAgenda | date('d/m/Y') }}</td>
+	            			<td>{{ cupo.horaCupo | date('h:i') }}</td>
+	            			<td>{{ cupo.agenda }}</td>	            			
+	            			<td>{{ cupo.nota }}</td>	         	         	            			
+	            			<td>{{ cupo.verificacion }}</td>      			
+	            			<td width="18%">{{ cupo.cargo }}</td>	            			        			
+	            		</tr>
+	            	{% endfor %}	            	
+	            </tbody>
+	        </table>       
+	    </div>                    
+            
+	    {% else %}
+	     <h5>No hay información disponible</h5>
+    {% endif %}
+{% endblock %}

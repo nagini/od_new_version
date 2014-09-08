@@ -12,18 +12,35 @@
 
 
 {% block cuerpo %}
+    
+                <div class="row-fluid">                                   
+                    <div class="span11">                        
+                        <form action="{{ path('informe_tipo_print') }}"  method="post">    
+                            <div style="display: none;">
+                                <input type="text" name="sede_id"   id="sede_id"      value="{{sede}}"  />
+                                <input type="text" name="tipo_id"   id="tipo_id"      value="{{estado}}" />	
+                                <input type="text" name="dateStart" id="dateStart"    value="{{dateStart | date('d/m/Y')}}" />
+                                <input type="text" name="dateEnd"   id="dateEnd"      value="{{dateEnd | date('d/m/Y')}}" />
+                           </div>                                
+                    </div>                            
+                           <div class="span1"><button class="btn" type="submit"><i class="icon-print"></i></button></div>
+                    </form>
+                </div>
+                        
             
     {% if cupos %}
 	    <div>
-	    <h5>Informe realizado entre las fechas 
-	    		<span class="label label-success">{{ dateStart | date('d/m/Y') }} </span> hasta 
-	    		<span class="label label-success">{{ dateEnd | date('d/m/Y') }} </span>
-	    </h5>
+                        <h5>Informe realizado entre las fechas 
+                            <span class="label label-success">{{ dateStart | date('d/m/Y') }} </span> hasta 
+                            <span class="label label-success">{{ dateEnd | date('d/m/Y') }} </span>                     
+                        </h5>
+                        
+	    
 	        <table class="table table-hover">
 	            <thead>
 	                <tr>
-	                	<th>##</th>
-	                	<th>Identificacion</th>	                                      
+                            <th>##</th>
+                            <th>Identificacion</th>	                                      
 	                    <th>Paciente</th>
 	                    <th>Movil</th>
 	                    <th>Fecha Agenda</th>
@@ -51,7 +68,8 @@
 	            	{% endfor %}	            	
 	            </tbody>
 	        </table>       
-	    </div>
+	    </div>                    
+            
 	    {% else %}
 	     <h5>No hay información disponible</h5>
     {% endif %}    
