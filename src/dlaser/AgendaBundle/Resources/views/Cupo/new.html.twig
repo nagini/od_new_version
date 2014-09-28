@@ -459,17 +459,17 @@
                         options[options.length] = new Option(text, data.fecha+' '+text+':00');
                     });
                     
-                    $.each(data.cuposList, function(i, val) 
+                    if(data.responseCupo==200)
                     {
-                        $("#cuposList tbody").append("<tr>");
-                          $("#cuposList tbody").append("<td>"+val.hora +"</td>");
-                          $("#cuposList tbody").append("<td>"+val.estado+"</td>");
-                        $("#cuposList tbody").append("</tr>");
-                    });
-                    
-                    
-                    select.val('');
-            		                            		                    
+                        $.each(data.cuposList, function(i, val) 
+                        {                     
+                            $("#cuposList tbody").append("<tr>");
+                              $("#cuposList tbody").append("<td>"+val.hora +"</td>");
+                              $("#cuposList tbody").append("<td>"+val.estado+"</td>");
+                            $("#cuposList tbody").append("</tr>");
+                        });                        
+                    }                    
+                    select.val('');            	                            		                    
                 }
                 else if(data.responseCode==400){
                 	$('#ajaxMsg').html(data.msg);

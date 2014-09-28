@@ -297,22 +297,28 @@ class CupoController extends Controller
                 if (isset($result))
                 {
                     $response['responseCode'] = 200;
+                    $response['responseCupo'] = 400;
                     $response['cupo'] = $result;
 
-                    // cargando informacion para los cupos asignados
-                    foreach($listCupos as $key => $value)
+                    if($listCupos)
                     {
-                        $response['cuposList'][$key] = $value;
+                        $response['responseCupo'] = 200;
+                        // cargando informacion para los cupos asignados
+                        foreach($listCupos as $key => $value)
+                        {
+                            $response['cuposList'][$key] = $value;
+                        }
+                        // se iteran los campos de los cupos para asignar el nombre completo correspondiente a su estado 
+                        // las fechas de igual forma se iteran para generar un formato y dar salida como string
+                        $int = 0;          $estado = $this->getEstadosDeCupos();
+                        foreach($response['cuposList'] as $mi_cupo)
+                        {                	
+                            $response['cuposList'][$int]['estado'] = $estado[$mi_cupo['estado']];
+                            $response['cuposList'][$int]['hora'] = $mi_cupo['hora']->format('d/m/Y H:i');
+                            $int ++;                		
+                        }
                     }
-                    // se iteran los campos de los cupos para asignar el nombre completo correspondiente a su estado 
-                    // las fechas de igual forma se iteran para generar un formato y dar salida como string
-                    $int = 0;          $estado = $this->getEstadosDeCupos();
-                    foreach($response['cuposList'] as $mi_cupo)
-                    {                	
-                        $response['cuposList'][$int]['estado'] = $estado[$mi_cupo['estado']];
-                        $response['cuposList'][$int]['hora'] = $mi_cupo['hora']->format('d/m/Y H:i');
-                        $int ++;                		
-                    }
+                    
                     // end objeto para listar los cupos asignados
                 } else {
                         $response['responseCode'] = 400;
