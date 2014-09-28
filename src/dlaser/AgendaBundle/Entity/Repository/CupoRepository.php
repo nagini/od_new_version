@@ -80,26 +80,26 @@ class CupoRepository extends EntityRepository
 	public function findAjaxBuscarCupo($valor)
 	{
 		$em = $this->getEntityManager();
-		$dql= 		"SELECT c.id,
-	    				c.hora,   				
-						c.estado,
-						c.nota,
-	    				p.priNombre,
-	    				p.segNombre,
-	    				p.priApellido,
-	    				p.segApellido,
-						p.movil,
-	    				car.nombre as cargo,						
-	    				s.nombre as sede
-    				FROM AgendaBundle:Cupo c
-    				LEFT JOIN c.paciente p
-    				LEFT JOIN c.cargo car
-					LEFT JOIN c.agenda a					    				
-    				LEFT JOIN a.sede s
-    				WHERE 
-    					p.identificacion = :identificacion AND    					
-    					c.hora >= :fechaI						
-    				ORDER BY c.hora ASC";
+                $dql= 		"SELECT c.id,
+                                        c.hora,   				
+                                        c.estado,
+                                        c.nota,
+                                        p.priNombre,
+                                        p.segNombre,
+                                        p.priApellido,
+                                        p.segApellido,
+                                        p.movil,
+                                        car.nombre as cargo,						
+                                        s.nombre as sede
+                                FROM AgendaBundle:Cupo c
+                                LEFT JOIN c.paciente p
+                                LEFT JOIN c.cargo car
+                                LEFT JOIN c.agenda a					    				
+                                LEFT JOIN a.sede s
+                                WHERE 
+                                        p.identificacion = :identificacion AND    					
+                                        c.hora >= :fechaI						
+                                ORDER BY c.hora ASC";
 		
 		$query = $em->createQuery($dql);
 		$fecha = new \DateTime('now');

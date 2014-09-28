@@ -148,6 +148,15 @@ class Paciente
      * @Assert\Range(max = 9999999999)
      */
     private $movil;
+    
+    /**
+     * @var string $otroMovil
+     * 
+     * @ORM\Column(name="otro_movil", type="string", length=10, nullable=true)
+     * @Assert\Range(min = 3000000000)
+     * @Assert\Range(max = 9999999999)
+     */
+    private $otroMovil;
 
     /**
      * @var string $email
@@ -447,6 +456,26 @@ class Paciente
     public function getMovil()
     {
         return $this->movil;
+    }
+    
+    /**
+     * Set movil
+     *
+     * @param string $otroMovil
+     */
+    public function setOtroMovil($otroMovil)
+    {
+        $this->otroMovil = $otroMovil;
+    }
+
+    /**
+     * Get otroMovil
+     *
+     * @return string 
+     */
+    public function getOtroMovil()
+    {
+        return $this->otroMovil;
     }
 
     /**

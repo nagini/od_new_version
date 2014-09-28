@@ -102,12 +102,12 @@
                                   {
 	                            	  $("#reservas tbody").append("<td>"+
 	                                  		"<select class='span2' id='select"+id+"'>"+
-	                                  		  "<option value='' selected>Opciones</option>"+
-	                                            "<option value='CO'>Confirmado</option>"+
-	                                            "<option value='CU'>Cumplida sin cita</option>"+
-	                                            "<option value='CA'>Cancelado</option>"+	                                            
-	                                            "<option value='RE'>Reprogramar</option>"+
-	                                          "</select>"+
+	                                  		    "<option value='' selected>Opciones</option>"+
+                                                            "<option value='CO'>Confirmado</option>"+
+                                                            "<option value='CU'>Cumplida</option>"+
+                                                            "<option value='CA'>Cancelado</option>"+	                                            
+                                                            "<option value='RE'>Reprogramar</option>"+
+                                                        "</select>"+
 	                                          "</td>");
 	                                    $("#reservas tbody").append("<td><a class='btn' href='#' onClick='showDialog("+id+"); return false;'>Aceptar</a></td>");
                                   }else{

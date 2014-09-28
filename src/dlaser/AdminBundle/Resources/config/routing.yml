@@ -78,6 +78,18 @@ usuario_edit:
     pattern:  /usuario/{id}/edit
     defaults: { _controller: AdminBundle:Usuario:edit }
     
+usuario_disable:
+    pattern:  /usuario/{usuario}/disable
+    defaults: { _controller: AdminBundle:Usuario:inhabilitar }
+
+usuario_enable:
+    pattern:  /usuario/{usuario}/enable
+    defaults: { _controller: AdminBundle:Usuario:habilitar }
+    
+usuario_disable_url:
+    pattern:  /usuario/disable_user
+    defaults: { _controller: AdminBundle:Usuario:disableUrl }
+    
 usuario_update:
     pattern:  /usuario/{id}/update
     defaults: { _controller: AdminBundle:Usuario:update }

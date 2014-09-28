@@ -258,21 +258,21 @@ class UsuarioController extends Controller
     public function savePermisoAction($usuario, $sede)
     {
     	$em = $this->getDoctrine()->getManager();		
-		$entity = $em->getRepository('UsuarioBundle:Usuario')->find($usuario);
-		$entitySede = $em->getRepository('ParametrizarBundle:Sede')->find($sede);
-					
-		if(!$entity || !$entitySede)
-		{
-			throw $this->createNotFoundException('El usuario o la sede solicitada no existe');
-		}
-		
-		if($entitySede->addUsuario($entity)){
-		    	
-    		$em->persist($entitySede);    		
-    		$em->flush();
-		}
+        $entity = $em->getRepository('UsuarioBundle:Usuario')->find($usuario);
+        $entitySede = $em->getRepository('ParametrizarBundle:Sede')->find($sede);
 
-		$this->get('session')->getFlashBag()->add('ok', 'El permiso ha sido creado éxitosamente.');
+        if(!$entity || !$entitySede)
+        {
+                throw $this->createNotFoundException('El usuario o la sede solicitada no existe');
+        }
+
+        if($entitySede->addUsuario($entity))
+        {
+            $em->persist($entitySede);    		
+            $em->flush();
+        }
+
+        $this->get('session')->getFlashBag()->add('ok', 'El permiso ha sido creado éxitosamente.');
     	return $this->redirect($this->generateUrl('permiso_new', array('id' => $usuario)));    	
     }
     
@@ -292,5 +292,45 @@ class UsuarioController extends Controller
     	$this->get('session')->getFlashBag()->add('ok', 'El permiso ha sido eliminado éxitosamente.');
     	return $this->redirect($this->generateUrl('permiso_new', array('id' => $usuario)));
     }
+    
+    public function inhabilitarAction($usuario)
+    {   
+        $em = $this->getDoctrine()->getManager();    	
+    	$usuario = $em->getRepository("UsuarioBundle:Usuario")->findOneById($usuario);
+        
+        if(!$usuario)
+        {
+            $this->get('session')->getFlashBag()->add('error', 'El usuario solicitado no contiene informacion disponible');
+            return $this->redirect($this->generateUrl('usuario_list'));            
+        }
+        
+        $usuario->setPerfil('ROLE_DISABLE');
+        $em->persist($usuario);    		
+        $em->flush();
+        
+        $this->get('session')->getFlashBag()->add('ok', 'El usuario fue inhabilitado exitosamente');
+        return $this->redirect($this->generateUrl('usuario_show', array('id' => $usuario->getId())));        
+    }
+    
+    public function habilitarAction($usuario)
+    {   
+        $em = $this->getDoctrine()->getManager();    	
+    	$usuario = $em->getRepository("UsuarioBundle:Usuario")->findOneById($usuario);
+        
+        if(!$usuario)
+        {
+            $this->get('session')->getFlashBag()->add('error', 'El usuario solicitado no contiene informacion disponible');
+            return $this->redirect($this->generateUrl('usuario_list'));            
+        }
+        
+        $usuario->setPerfil('ROLE_AUX');
+        $em->persist($usuario);    		
+        $em->flush();
+        
+        $this->get('session')->getFlashBag()->add('ok', 'El usuario fue habilitado exitosamente');
+        return $this->redirect($this->generateUrl('usuario_show', array('id' => $usuario->getId())));        
+    }
+    
+    public function disableUrlAction(){return $this->render('AdminBundle:Usuario:disable_user.html.twig');}
 }
 

@@ -4,6 +4,7 @@ security:
         Symfony\Component\Security\Core\User\User: sha512
 
     role_hierarchy:
+        ROLE_AUX:         ROLE_DISABLE
         ROLE_MEDICO:      ROLE_AUX
         ROLE_ADMIN:       ROLE_MEDICO        
         ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
@@ -24,6 +25,7 @@ security:
                 path: /logout
 
     access_control:
+        - { path: ^/admin/usuario/disable_user$, roles: ROLE_DISABLE }
         - { path: ^/admin/paciente/.*, roles: ROLE_AUX }
         - { path: ^/admin/factura/.*, roles: ROLE_AUX }
         - { path: ^/admin/cliente/.*, roles: ROLE_AUX }
@@ -41,4 +43,5 @@ security:
         - { path: ^/agenda/buscar$, roles: [ROLE_AUX,ROLE_AUX] }
         - { path: ^/agenda/.*, roles: [ROLE_AUX,ROLE_AUX] }
         
-        - { path: ^/informe/.*, roles: ROLE_AUX }       
+        - { path: ^/informe/.*, roles: ROLE_AUX }
+

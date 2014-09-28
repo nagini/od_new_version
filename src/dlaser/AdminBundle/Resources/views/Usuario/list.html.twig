@@ -38,6 +38,8 @@
                 		<span class="label label-info">Médico</span>
                 	{% elseif entity.perfil == 'ROLE_AUX' %}
                 		<span class="label label-warning">Auxiliar</span>
+                        {% elseif entity.perfil == 'ROLE_DISABLE' %}
+                		<span class="label label-inverse">Inhabilitado</span>
                 	{% endif %}
                 </td>
                 <td>{{ entity.telefono }}</td>

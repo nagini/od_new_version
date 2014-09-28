@@ -52,6 +52,13 @@
     <a href="{{ path('usuario_edit', { 'id': entity.id }) }}" class="btn">Modificar usuario</a>
     <a href="{{ path('usuario_list') }}" class="btn">Regresar al listado</a>
     
+    {%if entity.perfil == 'ROLE_DISABLE'%}
+        <a href="{{ path('usuario_enable', {'usuario': entity.id})}}" class="btn btn-warning">Habilitar</a>
+        {% else %}
+            <a href="{{ path('usuario_disable', {'usuario': entity.id})}}" class="btn btn-danger">Inhabilitar</a>
+    {%endif%}
+    
+    
     <h2>Permisos del usuario</h2>  
     
     <table class="table table-hover">

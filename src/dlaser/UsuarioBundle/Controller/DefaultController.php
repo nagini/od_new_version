@@ -20,6 +20,9 @@ class DefaultController extends Controller
     	elseif ($this->get('security.context')->isGranted('ROLE_MEDICO')) {
     		return $this->redirect($this->generateUrl('agenda_medica_list'));
     	}
+        elseif($this->get('security.context')->isGranted('ROLE_DISABLE')) {
+            return $this->redirect($this->generateUrl('usuario_disable_url'));
+        }        
     	else{
     		return $this->redirect($this->generateUrl('cupo_new'));
     	}    	

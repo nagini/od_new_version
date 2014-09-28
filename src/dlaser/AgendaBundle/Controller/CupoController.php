@@ -72,14 +72,14 @@ class CupoController extends Controller
         $user = $this->get('security.context')->getToken()->getUser();
         
                 
-        if($agenda && $paciente)
+        if($agenda && $paciente && $cargo)
         {
             // se valida la informacion de la cita que el paciente no cuente con una cita ya asignada en la misma agenda
-            $validarCita = $em->getRepository('AgendaBundle:Cupo')->findBy(array('agenda'=> $agenda->getId(), 'paciente'=>$paciente->getId()));
+            $validarCita = $em->getRepository('AgendaBundle:Cupo')->findBy(array('cargo'=>$cargo->getId(),'agenda'=> $agenda->getId(),'paciente'=>$paciente->getId()));
             
             if($validarCita)
             {
-                $this->get('session')->getFlashBag()->add('error', 'El paciente cuenta con una cita asignada en esta agenda.');        		
+                $this->get('session')->getFlashBag()->add('error', 'El paciente cuenta con una cita asignada en esta agenda con este mismo procedimiento.');        		
         	return $this->redirect($this->generateUrl('cupo_new'));
             }
             
@@ -250,62 +250,79 @@ class CupoController extends Controller
     }
 
     public function ajaxBuscarAction()
-    {
-    
-    $request = $this->get('request');
+    {    
+        $request = $this->get('request');
 
-		$paciente = $request->request->get('paciente');
-		$agenda = $request->request->get('agenda');
-		$cargo = $request->request->get('cargo');
-		$reserva = $request->request->get('cupo');
+        $paciente = $request->request->get('paciente');
+        $agenda = $request->request->get('agenda');
+        $cargo = $request->request->get('cargo');
+        $reserva = $request->request->get('cupo');
 
-		if (is_numeric($paciente) && is_numeric($agenda) && is_numeric($cargo)) {
+        if (is_numeric($paciente) && is_numeric($agenda) && is_numeric($cargo)) {
 
-			$em = $this->getDoctrine()->getManager();
-			$entity = $em->getRepository('AgendaBundle:Agenda')->find($agenda);
-			$ncupos = ((($entity->getFechaFin()->getTimestamp()	- $entity->getFechaInicio()->getTimestamp()) / 60) / $entity->getIntervalo());
-			$turno = $entity->getFechaInicio();
+                $em = $this->getDoctrine()->getManager();
+                $entity = $em->getRepository('AgendaBundle:Agenda')->find($agenda);
+                $ncupos = ((($entity->getFechaFin()->getTimestamp() - $entity->getFechaInicio()->getTimestamp()) / 60) / $entity->getIntervalo());
+                $turno = $entity->getFechaInicio();
 
-			$response = array("fecha" => $entity->getFechaInicio()->format('Y-m-d'));
+                $response = array("fecha" => $entity->getFechaInicio()->format('Y-m-d'));
 
-			for ($i = 0; $i < $ncupos; $i++) {
+                for ($i = 0; $i < $ncupos; $i++) {
 
-				$cupos[] = $turno->format('H:i');
-				$turno->add(new \DateInterval('PT' . $entity->getIntervalo() . 'M'));
-			}
+                        $cupos[] = $turno->format('H:i');
+                        $turno->add(new \DateInterval('PT' . $entity->getIntervalo() . 'M'));
+                }
 
-			$query = $em->createQuery(' select c
-                                        from
-                                             dlaser\AgendaBundle\Entity\Cupo c
-                                        where
-                                             c.agenda = :agenda');
+                $query = $em->createQuery(' select c
+                                from
+                                     dlaser\AgendaBundle\Entity\Cupo c
+                                where
+                                     c.agenda = :agenda');
 
-			$query->setParameter('agenda', $agenda);
-			$iterableResult = $query->iterate();
+                $query->setParameter('agenda', $agenda);
+                $listCupos = $query->getArrayResult();                
+                $iterableResult = $query->iterate();
 
-			foreach ($iterableResult AS $row) {
-				$cupo = $row[0];
-				$cupillos[] = $cupo->getHora()->format('H:i');
-			}
+                foreach ($iterableResult AS $row) {
+                        $cupo = $row[0];
+                        $cupillos[] = $cupo->getHora()->format('H:i');
+                }
 
-			if (isset($cupillos)) {
-				$result = array_diff($cupos, $cupillos);
-			} else {
-				$result = array_diff($cupos, array());
-			}
+                if (isset($cupillos)) {
+                        $result = array_diff($cupos, $cupillos);
+                } else {
+                        $result = array_diff($cupos, array());
+                }
 
-			if (isset($result)) {
-				$response['responseCode'] = 200;
-				$response['cupo'] = $result;
-			} else {
-				$response['responseCode'] = 400;
-				$response['msg'] = "La agenda no tiene cupos definidos.";
-			}
+                if (isset($result))
+                {
+                    $response['responseCode'] = 200;
+                    $response['cupo'] = $result;
 
-			$return = json_encode($response);
-			return new Response($return, 200,
-					array('Content-Type' => 'application/json'));
-		}
+                    // cargando informacion para los cupos asignados
+                    foreach($listCupos as $key => $value)
+                    {
+                        $response['cuposList'][$key] = $value;
+                    }
+                    // se iteran los campos de los cupos para asignar el nombre completo correspondiente a su estado 
+                    // las fechas de igual forma se iteran para generar un formato y dar salida como string
+                    $int = 0;          $estado = $this->getEstadosDeCupos();
+                    foreach($response['cuposList'] as $mi_cupo)
+                    {                	
+                        $response['cuposList'][$int]['estado'] = $estado[$mi_cupo['estado']];
+                        $response['cuposList'][$int]['hora'] = $mi_cupo['hora']->format('d/m/Y H:i');
+                        $int ++;                		
+                    }
+                    // end objeto para listar los cupos asignados
+                } else {
+                        $response['responseCode'] = 400;
+                        $response['msg'] = "La agenda no tiene cupos definidos.";
+                }
+
+                $return = json_encode($response);
+                return new Response($return, 200,
+                                array('Content-Type' => 'application/json'));
+        }
     }
 
     public function ajaxListarAction(){
@@ -340,18 +357,7 @@ class CupoController extends Controller
             $query->setParameter('agenda', $agenda);            
             $cupo = $query->getArrayResult();
             
-            $estado = array(
-            		'A'=> '<span class="label label-info">Asignado</span>',
-                        'CA'=>'<span class="label label-important">Cancelado</span>',
-                        'RE'=> 'Reprogramado',
-                        'CO'=> '<span class="label label-warning">Confirmado</span>',
-                        'CU'=> '<span class="label label-success">Cumplida</span>',
-                        'IN'=> 'Incumplida',
-                        'PN'=> '<span class="label label-inverse">Sin Cita x</span>',
-                        'DE'=> 'Desertor',
-                        'NO'=> 'NO Inicia', 'FI' => 'Finalizado',
-                        'PD'=> '<span class="label">Con Cita</span>'
-            		);            
+            $estado = $this->getEstadosDeCupos();            
             
             
             if (!$cupo){
@@ -398,18 +404,7 @@ public function ajaxBuscarCupoAction() {
 		if (!$reserva) {
 			$response = array("responseCode" => 400, "msg" => "No existen reservas para los parametros de consulta ingrasados.");
 		} else {
-                        $estado = array(
-                                'A'=> '<span class="label label-info">Asignado</span>',
-                                'CA'=>'<span class="label label-important">Cancelado</span>',
-                                'RE'=> 'Reprogramado',
-                                'CO'=> '<span class="label label-warning">Confirmado</span>',
-                                'CU'=> '<span class="label label-success">Cumplida</span>',
-                                'IN'=> 'Incumplida',
-                                'PN'=> '<span class="label label-inverse">Sin Cita x</span>',
-                                'DE'=> 'Desertor',
-                                'NO'=> 'NO Inicia', 'FI' => 'Finalizado',
-                                'PD'=> '<span class="label">Con Cita</span>'
-                                );				
+                        $estado = $this->getEstadosDeCupos();
 
                         $response = array("responseCode" => 200);
 
@@ -513,4 +508,20 @@ public function ajaxBuscarCupoAction() {
 		$return = json_encode($response);
 		return new Response($return,200,array('Content-Type'=>'application/json'));		
 	}
+        
+        public function getEstadosDeCupos()
+        {
+            return array(
+            		'A'=> '<span class="label label-info">Asignado</span>',
+                        'CA'=>'<span class="label label-important">Cancelado</span>',
+                        'RE'=> 'Reprogramado',
+                        'CO'=> '<span class="label label-warning">Confirmado</span>',
+                        'CU'=> '<span class="label label-success">Cumplida</span>',
+                        'IN'=> 'Incumplida',
+                        'PN'=> '<span class="label label-inverse">Sin Cita x</span>',
+                        'DE'=> 'Desertor',
+                        'NO'=> 'NO Inicia', 'FI' => 'Finalizado',
+                        'PD'=> '<span class="label">Con Cita</span>'
+            		);
+        }
 }

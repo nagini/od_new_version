@@ -12,17 +12,17 @@ class AgendaMedicaController extends Controller
 {
 	public function listAction()
 	{
-		$em = $this->getDoctrine()->getManager();
-		$medicos = $em->getRepository('AgendaBundle:Agenda')->findMedicos();
+            $em = $this->getDoctrine()->getManager();
+            $medicos = $em->getRepository('AgendaBundle:Agenda')->findMedicos();
 
-		$breadcrumbs = $this->get("white_october_breadcrumbs");
-		$breadcrumbs->addItem("Inicio", $this->get("router")->generate("agenda_list"));
-		$breadcrumbs->addItem("Agenda", $this->get("router")->generate("agenda_list"));
-		$breadcrumbs->addItem("Medicos");
-	
-		return $this->render('AgendaBundle:AgendaMedica:list.html.twig', array(
-				'medicos'  => $medicos
-		));
+            $breadcrumbs = $this->get("white_october_breadcrumbs");
+            $breadcrumbs->addItem("Inicio", $this->get("router")->generate("agenda_list"));
+            $breadcrumbs->addItem("Agenda", $this->get("router")->generate("agenda_list"));
+            $breadcrumbs->addItem("Medicos");
+
+            return $this->render('AgendaBundle:AgendaMedica:list.html.twig', array(
+                            'medicos'  => $medicos
+            ));
 	}
 	
 	public function agendaSedesAction($medico)
@@ -131,10 +131,10 @@ class AgendaMedicaController extends Controller
         $user = $this->get('security.context')->getToken()->getUser();
 
 
-       if($agenda && $paciente)
+       if($agenda && $paciente && $cargo)
        {
             // se valida la informacion de la cita que el paciente no cuente con una cita ya asignada en la misma agenda
-            $validarCita = $em->getRepository('AgendaBundle:Cupo')->findBy(array('agenda'=> $agenda->getId(), 'paciente'=>$paciente->getId()));
+            $validarCita = $em->getRepository('AgendaBundle:Cupo')->findBy(array('cargo'=>$cargo->getId(),'agenda'=> $agenda->getId(),'paciente'=>$paciente->getId()));
             
             if($validarCita)
             {
